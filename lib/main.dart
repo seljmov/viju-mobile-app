@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+import 'core/bloc/bloc_global_observer.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: '.env');
+  await initializeDateFormatting('ru_RU', null);
+  Bloc.observer = BlocGlobalObserver();
+  Bloc.transformer = bloc_concurrency.sequential();
+
   runApp(const MyApp());
 }
 
@@ -28,7 +41,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
