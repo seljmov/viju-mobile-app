@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../constants/constants.dart';
+import '../../extension/formatted_message.dart';
 import '../../helpers/dio_helper.dart';
 import '../../helpers/my_logger.dart';
 import 'tokens_repository.dart';
@@ -41,25 +42,35 @@ class TokensRepositoryImpl implements TokensRepository {
 
   @override
   Future<bool> updateTokensFromServer() async {
-    final data = {
-      'refreshToken': await getRefreshToken(),
-    };
+    try {
+      final data = {
+        'refreshToken': await getRefreshToken(),
+      };
 
-    final response = await DioHelper.postData(
-      url: '/auth/refresh',
-      data: data,
-      useAuthErrorInterceptor: false,
-    );
-
-    if (response.statusCode == 200) {
-      await saveTokens(
-        response.data['accessToken'],
-        response.data['refreshToken'],
+      final response = await DioHelper.postData(
+        url: '/auth/refresh',
+        data: data,
+        useAuthErrorInterceptor: false,
       );
-      return true;
-    }
 
-    await deleteTokens();
-    throw Exception('Не удалось обновить токены!');
+      switch (response.statusCode) {
+        case 200:
+          await saveTokens(
+            response.data['accessToken'],
+            response.data['refreshToken'],
+          );
+          return true;
+        case 400:
+          throw Exception('Не задан токен обновления. Попробуйте снова.');
+        case 404:
+          throw Exception('Пользователь не найден или отключен.');
+        default:
+          throw Exception('Не удалось обновить токены! Попробуйте снова.');
+      }
+    } on Exception catch (e) {
+      await deleteTokens();
+      MyLogger.e(e.getMessage);
+      rethrow;
+    }
   }
 }

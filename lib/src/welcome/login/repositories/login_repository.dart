@@ -20,9 +20,9 @@ class LoginRepositoryImpl implements ILoginRepository {
         case 200:
           return LoginCompleteDto.fromJson(response.data);
         case 400:
-          throw Exception('Переданы некорректная данные');
+          throw Exception('Введен неверный пароль. Попробуйте снова.');
         case 404:
-          throw Exception('Пользователь не найден или отключен');
+          throw Exception('Пользователь не найден или отключен.');
         default:
           throw Exception('Что-то пошло не так... Попробуйте снова.');
       }
