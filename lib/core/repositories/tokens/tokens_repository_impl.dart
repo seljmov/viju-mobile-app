@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../constants/constants.dart';
 import '../../helpers/dio_helper.dart';
+import '../../helpers/my_logger.dart';
 import 'tokens_repository.dart';
 
 /// Репозиторий работы с токенами
@@ -27,9 +28,15 @@ class TokensRepositoryImpl implements TokensRepository {
   }
 
   @override
-  Future<void> deleteTokens() async {
-    await storage.delete(key: _accessToken);
-    await storage.delete(key: _refreshToken);
+  Future<bool> deleteTokens() async {
+    try {
+      await storage.delete(key: _accessToken);
+      await storage.delete(key: _refreshToken);
+      return true;
+    } catch (e) {
+      MyLogger.e(e.toString());
+      rethrow;
+    }
   }
 
   @override

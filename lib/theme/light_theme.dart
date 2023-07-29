@@ -29,19 +29,19 @@ final lightThemeData = ThemeData(
   textTheme: TextTheme(
     displayLarge: const TextStyle(
       fontSize: 64,
-      fontWeight: FontWeight.w900,
+      fontWeight: FontWeight.w600,
       letterSpacing: -1.5,
       color: kLightTextPrimaryColor,
     ),
     displayMedium: const TextStyle(
       fontSize: 48,
-      fontWeight: FontWeight.w800,
+      fontWeight: FontWeight.w600,
       letterSpacing: -0.5,
       color: kLightTextPrimaryColor,
     ),
     displaySmall: const TextStyle(
       fontSize: 36,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       color: kLightTextPrimaryColor,
     ),
     headlineMedium: const TextStyle(
@@ -131,12 +131,18 @@ final lightThemeData = ThemeData(
   ),
   inputDecorationTheme: InputDecorationTheme(
     errorMaxLines: 4,
-    labelStyle: const TextStyle(
-      fontSize: 16,
+    floatingLabelStyle: const TextStyle(
+      fontSize: 14,
       letterSpacing: 0.15,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w400,
       color: kLightTextPrimaryColor,
     ),
+    // labelStyle: const TextStyle(
+    //   fontSize: 16,
+    //   letterSpacing: 0.15,
+    //   fontWeight: FontWeight.w600,
+    //   color: kLightTextPrimaryColor,
+    // ),
     errorStyle: const TextStyle(
       fontSize: 14,
       letterSpacing: 0.15,
@@ -149,39 +155,39 @@ final lightThemeData = ThemeData(
       fontWeight: FontWeight.w400,
       color: kLightTextSecondaryColor.withOpacity(0.5),
     ),
-    errorBorder: OutlineInputBorder(
+    errorBorder: UnderlineInputBorder(
       borderSide: BorderSide(
         color: kRedColor.withOpacity(0.5),
         width: 2,
       ),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(1),
     ),
-    focusedErrorBorder: OutlineInputBorder(
+    focusedErrorBorder: UnderlineInputBorder(
       borderSide: BorderSide(
         color: kRedColor.withOpacity(0.5),
         width: 2,
       ),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(1),
     ),
-    enabledBorder: OutlineInputBorder(
+    enabledBorder: UnderlineInputBorder(
       borderSide: BorderSide(
         color: kLightTextSecondaryColor.withOpacity(0.25),
         width: 2,
       ),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(1),
     ),
-    focusedBorder: OutlineInputBorder(
+    focusedBorder: UnderlineInputBorder(
       borderSide: BorderSide(
-        color: kLightTextSecondaryColor.withOpacity(0.25),
+        color: kPrimaryColor.withOpacity(0.25),
         width: 2,
       ),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(1),
     ),
   ),
   snackBarTheme: SnackBarThemeData(
     behavior: SnackBarBehavior.floating,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(1),
     ),
     backgroundColor: kLightBackgroundSecondaryColor,
     contentTextStyle: const TextStyle(

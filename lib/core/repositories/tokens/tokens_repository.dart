@@ -18,7 +18,7 @@ abstract class TokensRepository {
   Future<String?> getRefreshToken();
 
   /// Удалить токены
-  Future<void> deleteTokens();
+  Future<bool> deleteTokens();
 
   /// Обновить токены с сервера
   Future<bool> updateTokensFromServer();

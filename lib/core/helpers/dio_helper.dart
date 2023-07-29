@@ -2,16 +2,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_pretty_dio_logger/flutter_pretty_dio_logger.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../repositories/tokens/tokens_repository_impl.dart';
+import 'env_helper.dart';
 
 /// Помощник работы с Dio
 abstract class DioHelper {
   static const _localBaseUrl = "https://dev.waste.v1ju.ru/api";
   //static const String _baseUrl = 'http://78.40.219.169:1480/api';
 
-  static String get baseUrl => dotenv.env['main_api'] ?? _localBaseUrl;
+  static String get baseUrl => EnvHelper.mainApiUrl ?? _localBaseUrl;
 
   /// Получить данные
   static Future<Response> getData({
@@ -92,7 +92,8 @@ abstract class DioHelper {
     if (useAuthErrorInterceptor) {
       client.interceptors.add(InterceptorsWrapper(
         onError: (DioException error, handler) async {
-          if (error.response?.statusCode == 401) {
+          if (error.response?.statusCode == 401 ||
+              error.response?.statusCode == 400) {
             try {
               final tokensRepository = TokensRepositoryImpl();
               await tokensRepository.updateTokensFromServer();
