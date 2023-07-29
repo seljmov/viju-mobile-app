@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../core/constants/assets_constants.dart';
 import '../../../../core/widgets/button/thesis_button.dart';
-import '../../../../theme/theme_colors.dart';
+import '../../../../theme/theme_extention.dart';
 import '../bloc/login_scope.dart';
 import '../contracts/login_start_dto/login_start_dto.dart';
 
@@ -30,7 +31,7 @@ class LoginFormWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SvgPicture.asset(
-                  'assets/logo/logo.svg',
+                  AppIcons.logo,
                   height: 180,
                 ),
                 const SizedBox(height: 45),
@@ -40,6 +41,11 @@ class LoginFormWidget extends StatelessWidget {
                       loginController.text.isEmpty ||
                           passwordController.text.isEmpty,
                   validator: _validateLogin,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: context.textPrimaryColor,
+                  ),
                   decoration: const InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelText: 'Логин',
@@ -53,11 +59,10 @@ class LoginFormWidget extends StatelessWidget {
                       loginController.text.isEmpty ||
                           passwordController.text.isEmpty,
                   validator: _validatePassword,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    //letterSpacing: 0.15,
                     fontWeight: FontWeight.w600,
-                    color: kLightTextPrimaryColor,
+                    color: context.textPrimaryColor,
                   ),
                   decoration: const InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.always,

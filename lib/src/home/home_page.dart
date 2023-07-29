@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/constants/assets_constants.dart';
+import '../../theme/theme_constants.dart';
+import '../../theme/theme_extention.dart';
 import '../welcome/auth/auth_scope.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,12 +21,22 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () => AuthScope.loggedOut(context),
-            icon: const Icon(Icons.logout),
+            icon: SvgPicture.asset(AppIcons.logout),
           ),
+          const SizedBox(width: 8),
         ],
       ),
-      body: const Center(
-        child: Text('HomePage'),
+      body: SingleChildScrollView(
+        padding: kThemeDefaultPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Заявки',
+              style: context.textTheme.displaySmall,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -12,7 +12,7 @@ const kDarkTextPrimaryColor = Color(0xFFE2E2E2);
 final kDarkTextSecondaryColor = const Color(0xFFE2E2E2).withOpacity(0.75);
 
 const kLightBackgroundColor = Colors.white;
-const kLightBackgroundSecondaryColor = Color(0xFFFFFFFF);
+const kLightBackgroundSecondaryColor = Color(0xFFF0F0F0);
 const kLightBackgroundTertiaryColor = Color(0xFFE5E5EA);
 
 const kLightTextPrimaryColor = kDarkBackgroundColor;

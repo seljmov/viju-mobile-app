@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'constants/assets_constants.dart';
 import 'widgets/thesis_progress_bar.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class SplashScreen extends StatelessWidget {
         children: [
           Center(
             child: SvgPicture.asset(
-              'assets/logo/logo.svg',
+              AppIcons.logo,
               width: 200,
               height: 200,
             ),

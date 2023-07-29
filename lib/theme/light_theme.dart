@@ -29,19 +29,19 @@ final lightThemeData = ThemeData(
   textTheme: TextTheme(
     displayLarge: const TextStyle(
       fontSize: 64,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700,
       letterSpacing: -1.5,
       color: kLightTextPrimaryColor,
     ),
     displayMedium: const TextStyle(
       fontSize: 48,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700,
       letterSpacing: -0.5,
       color: kLightTextPrimaryColor,
     ),
     displaySmall: const TextStyle(
       fontSize: 36,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700,
       color: kLightTextPrimaryColor,
     ),
     headlineMedium: const TextStyle(
@@ -137,12 +137,12 @@ final lightThemeData = ThemeData(
       fontWeight: FontWeight.w400,
       color: kLightTextPrimaryColor,
     ),
-    // labelStyle: const TextStyle(
-    //   fontSize: 16,
-    //   letterSpacing: 0.15,
-    //   fontWeight: FontWeight.w600,
-    //   color: kLightTextPrimaryColor,
-    // ),
+    labelStyle: const TextStyle(
+      fontSize: 16,
+      letterSpacing: 0.15,
+      fontWeight: FontWeight.w400,
+      color: kLightTextPrimaryColor,
+    ),
     errorStyle: const TextStyle(
       fontSize: 14,
       letterSpacing: 0.15,

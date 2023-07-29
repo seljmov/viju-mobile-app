@@ -1,5 +1,5 @@
 /// Коллекция иконок
-abstract class ThesisIcons {
+abstract class AppIcons {
   static String get logo => 'assets/logo/logo.svg';
   static String get back => 'assets/icons/icon_back.svg';
   static String get delete => 'assets/icons/icon_delete.svg';
