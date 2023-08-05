@@ -11,7 +11,7 @@ import '../repositories/login_repository.dart';
 
 part 'login_bloc.freezed.dart';
 
-/// Блок авторизации
+/// Блок аутентификации
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final TokensRepository _tokensRepository;
   final ILoginRepository _loginRepository;

@@ -4,13 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'constants/assets_constants.dart';
 import 'widgets/thesis_progress_bar.dart';
 
+/// Экран загрузки
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: kPrimaryColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,

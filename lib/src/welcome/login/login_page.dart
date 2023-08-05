@@ -7,6 +7,7 @@ import 'bloc/login_bloc.dart';
 import 'login_screen.dart';
 import 'repositories/login_repository.dart';
 
+/// Страница входа в приложение
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../contracts/login_start_dto/login_start_dto.dart';
 import 'login_bloc.dart';
 
+/// Скоп для блока аутентификации
 class LoginScope {
   static LoginBloc of(BuildContext context) {
     return BlocProvider.of<LoginBloc>(context);

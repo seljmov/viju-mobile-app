@@ -1,10 +1,15 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Интерфейс репозиторий работы с пользователем
 abstract class IUserRepository {
+  /// Сохранить роль пользователя
   Future<bool> saveRole(int role);
+
+  /// Получить роль пользователя
   Future<int?> getRole();
 }
 
+/// Репозиторий работы с пользователем
 class UserRepositoryImpl implements IUserRepository {
   static const String _roleKey = '_roleKey';
 

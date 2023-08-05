@@ -6,6 +6,7 @@ import '../../theme/theme_constants.dart';
 import '../../theme/theme_extention.dart';
 import '../welcome/auth/auth_scope.dart';
 
+/// Экран главной страницы
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 

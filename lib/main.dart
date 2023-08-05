@@ -30,6 +30,7 @@ Future<void> main() async {
   runApp(AppConfigurator(savedTheme: savedTheme));
 }
 
+/// Конфигурация приложения
 class AppConfigurator extends StatelessWidget {
   const AppConfigurator({
     super.key,
@@ -71,6 +72,7 @@ class AppConfigurator extends StatelessWidget {
   }
 }
 
+/// Запуск приложения
 class AppRunner extends StatefulWidget {
   const AppRunner({super.key});
 

@@ -7,6 +7,7 @@ import '../../../../theme/theme_extention.dart';
 import '../bloc/login_scope.dart';
 import '../contracts/login_start_dto/login_start_dto.dart';
 
+/// Виджет формы входа
 class LoginFormWidget extends StatelessWidget {
   const LoginFormWidget({super.key});
 
