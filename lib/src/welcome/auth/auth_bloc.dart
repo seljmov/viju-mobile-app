@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/constants/routes_constants.dart';
 import '../../../core/extension/formatted_message.dart';
@@ -48,6 +49,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthState.loading());
       await _tokensRepository.deleteTokens();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
       navService.pushNamedAndRemoveUntil(AppRoutes.start);
     } on Exception catch (e) {
       MyLogger.e(e.getMessage);

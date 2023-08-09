@@ -16,6 +16,7 @@ class LoginRepositoryImpl implements ILoginRepository {
       final response = await DioHelper.postData(
         url: '/auth',
         data: startDto.toJson(),
+        useAuthrorization: false,
         useAuthErrorInterceptor: false,
       );
 

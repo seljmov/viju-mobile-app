@@ -8,59 +8,27 @@ import 'env_helper.dart';
 
 /// Помощник работы с Dio
 abstract class DioHelper {
+  static final _tokensRepository = TokensRepositoryImpl();
   static const _localBaseUrl = "https://dev.waste.v1ju.ru/api";
-  //static const String _baseUrl = 'http://78.40.219.169:1480/api';
 
   static String get baseUrl => EnvHelper.mainApiUrl ?? _localBaseUrl;
-
-  /// Получить данные
-  static Future<Response> getData({
-    required String url,
-    required Map<String, dynamic> headers,
-    bool useLoggerInterceptor = true,
-    bool useAuthErrorInterceptor = true,
-  }) async {
-    final dio = getDioClient(useLoggerInterceptor, useAuthErrorInterceptor);
-    dio.options.headers = headers;
-    return await dio.get(url);
-  }
 
   /// Отправить данные
   static Future<Response> postData({
     required String url,
     dynamic data,
-    Map<String, dynamic>? headers,
+    bool useAuthrorization = true,
     bool useLoggerInterceptor = true,
     bool useAuthErrorInterceptor = true,
   }) async {
     final dio = getDioClient(useLoggerInterceptor, useAuthErrorInterceptor);
-    dio.options.headers = headers;
+    if (useAuthrorization) {
+      final accessToken = await _tokensRepository.getAccessToken();
+      final body = Map.from(data ?? {});
+      body['accessToken'] = accessToken;
+      data = body;
+    }
     return await dio.post(url, data: data);
-  }
-
-  /// Изменить данные
-  static Future<Response> patchData({
-    required String url,
-    dynamic data,
-    Map<String, dynamic>? headers,
-    bool useLoggerInterceptor = true,
-    bool useAuthErrorInterceptor = true,
-  }) async {
-    final dio = getDioClient(useLoggerInterceptor, useAuthErrorInterceptor);
-    dio.options.headers = headers;
-    return await dio.patch(url, data: data);
-  }
-
-  /// Удалить данные
-  static Future<Response> deleteData({
-    required String url,
-    Map<String, dynamic>? headers,
-    bool useLoggerInterceptor = true,
-    bool useAuthErrorInterceptor = true,
-  }) async {
-    final dio = getDioClient(useLoggerInterceptor, useAuthErrorInterceptor);
-    dio.options.headers = headers;
-    return await dio.delete(url);
   }
 
   /// Получить клиент с найстройками

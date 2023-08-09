@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/constants/assets_constants.dart';
 import '../../theme/theme_constants.dart';
 import '../../theme/theme_extention.dart';
 import '../welcome/auth/auth_scope.dart';
+import 'requests/bloc/request_bloc.dart';
+import 'requests/repositories/request_repository.dart';
+import 'requests/request_screen.dart';
 
 /// Экран главной страницы
 class HomePage extends StatefulWidget {
@@ -28,13 +32,23 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: kThemeDefaultPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Заявки',
-              style: context.textTheme.displaySmall,
+            Padding(
+              padding: kThemeDefaultPadding,
+              child: Text(
+                'Заявки',
+                style: context.textTheme.displaySmall,
+              ),
+            ),
+            const SizedBox(height: 16),
+            BlocProvider(
+              create: (_) => RequestBloc(
+                initialState: const RequestState.initial(),
+                requestRepository: RequestRepositoryImpl(),
+              ),
+              child: const RequestScreen(),
             ),
           ],
         ),

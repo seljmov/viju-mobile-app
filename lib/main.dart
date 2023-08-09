@@ -9,8 +9,10 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'core/bloc/bloc_global_observer.dart';
 import 'core/constants/constants.dart';
 import 'core/constants/routes_constants.dart';
+import 'core/helpers/env_helper.dart';
 import 'core/helpers/message_helper.dart';
 import 'core/repositories/tokens/tokens_repository_impl.dart';
+import 'core/repositories/user/user_repository.dart';
 import 'src/welcome/auth/auth_bloc.dart';
 import 'src/welcome/auth/auth_scope.dart';
 import 'src/welcome/auth/repositories/auth_repository.dart';
@@ -22,6 +24,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: '.env');
+
+  // TODO: Проверить необходимость
+  final userRepository = UserRepositoryImpl();
+  await userRepository.getUserIsUsingDevApi().then((value) {
+    EnvHelper.mainApiUrl =
+        value ? EnvHelper.devApiUrl : EnvHelper.productionApiUrl;
+  });
+
   await initializeDateFormatting('ru_RU', null);
   Bloc.observer = BlocGlobalObserver();
   Bloc.transformer = bloc_concurrency.sequential();

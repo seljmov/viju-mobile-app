@@ -44,8 +44,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           userName: loginDto.userName.substring(1),
         );
       } else {
-        EnvHelper.mainApiUrl = EnvHelper.productApiUrl ?? '';
+        EnvHelper.mainApiUrl = EnvHelper.productionApiUrl ?? '';
       }
+
+      await _userRepository.setUserUsingDevApi(
+        event.startDto.userName.startsWith('_'),
+      );
+
+      MyLogger.i(event.startDto.userName.startsWith('_')
+          ? 'Используется dev api'
+          : 'Используется production api');
 
       final tokens = await _loginRepository.startLogin(loginDto);
       await _tokensRepository.saveTokens(
