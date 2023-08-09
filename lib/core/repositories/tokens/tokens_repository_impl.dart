@@ -16,9 +16,6 @@ class TokensRepositoryImpl implements TokensRepository {
   Future<void> saveTokens(String accessToken, String refreshToken) async {
     await storage.write(key: _accessToken, value: accessToken);
     await storage.write(key: _refreshToken, value: refreshToken);
-
-    MyLogger.d('accessToken -> $accessToken');
-    MyLogger.d('refreshToken -> $refreshToken');
   }
 
   @override

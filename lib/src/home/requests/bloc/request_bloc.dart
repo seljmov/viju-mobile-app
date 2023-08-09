@@ -29,9 +29,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     try {
       emit(const RequestState.loading());
       final requests = await _requestRepository.getRequests(event.status);
-      emit(requests.isEmpty
-          ? RequestState.empty(status: event.status)
-          : RequestState.loaded(status: event.status, requests: requests));
+      emit(RequestState.loaded(status: event.status, requests: requests));
     } on Exception catch (e) {
       emit(RequestState.error(message: e.getMessage));
       MyLogger.e(e.getMessage);
@@ -57,11 +55,6 @@ abstract class RequestState with _$RequestState {
 
   /// Состояние загрузки
   const factory RequestState.loading() = _RequestLoadingState;
-
-  /// Состояние загрузки
-  const factory RequestState.empty({
-    required int status,
-  }) = _RequestEmptyState;
 
   /// Состояние успешной загрузки
   const factory RequestState.loaded({

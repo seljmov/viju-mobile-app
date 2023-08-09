@@ -9,6 +9,15 @@ abstract class RequestStatuses {
 
   static const int count = 6;
 
+  static List<String> get names => [
+        statusName(New),
+        statusName(Agreed),
+        statusName(InProgress),
+        statusName(Executed),
+        statusName(Completed),
+        statusName(Canceled),
+      ];
+
   /// Возвращает название статуса по его коду
   static String statusName(int status) => switch (status) {
         New => 'Новая',

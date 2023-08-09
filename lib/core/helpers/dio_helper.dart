@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_pretty_dio_logger/flutter_pretty_dio_logger.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
+import '../constants/routes_constants.dart';
 import '../repositories/tokens/tokens_repository_impl.dart';
 import 'env_helper.dart';
+import 'my_logger.dart';
 
 /// Помощник работы с Dio
 abstract class DioHelper {
@@ -18,50 +18,33 @@ abstract class DioHelper {
     required String url,
     dynamic data,
     bool useAuthrorization = true,
-    bool useLoggerInterceptor = true,
     bool useAuthErrorInterceptor = true,
   }) async {
-    final dio = getDioClient(useLoggerInterceptor, useAuthErrorInterceptor);
-    if (useAuthrorization) {
-      final accessToken = await _tokensRepository.getAccessToken();
-      final body = Map.from(data ?? {});
-      body['accessToken'] = accessToken;
-      data = body;
-    }
+    final dio = getDioClient(useAuthErrorInterceptor);
     return await dio.post(url, data: data);
   }
 
   /// Получить клиент с найстройками
-  static Dio getDioClient(
-    bool useLoggerInterceptor,
-    bool useAuthErrorInterceptor,
-  ) {
+  static Dio getDioClient(bool useAuthErrorInterceptor) {
     final client = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        receiveDataWhenStatusError: true,
-        connectTimeout: const Duration(seconds: 32),
-        receiveTimeout: const Duration(seconds: 32),
+        connectTimeout: const Duration(seconds: 16),
+        receiveTimeout: const Duration(seconds: 16),
       ),
     );
 
-    if (useLoggerInterceptor) {
-      client.interceptors.add(
-        PrettyDioLogger(
-          requestHeader: true,
-          requestBody: true,
-          responseBody: true,
-          responseHeader: true,
-          error: true,
-        ),
-      );
-    }
-
     if (useAuthErrorInterceptor) {
       client.interceptors.add(InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final accessToken = await _tokensRepository.getAccessToken();
+          final body = Map.from(options.data ?? {});
+          body['accessToken'] = accessToken;
+          options.data = body;
+          return handler.next(options);
+        },
         onError: (DioException error, handler) async {
-          if (error.response?.statusCode == 401 ||
-              error.response?.statusCode == 400) {
+          if (error.response?.statusCode == 400) {
             try {
               final tokensRepository = TokensRepositoryImpl();
               await tokensRepository.updateTokensFromServer();
@@ -73,36 +56,38 @@ abstract class DioHelper {
               );
 
               final accessToken = await tokensRepository.getAccessToken();
+              final data = error.requestOptions.data;
+              if (data is Map<String, dynamic> &&
+                  data.containsKey('accessToken')) {
+                data['accessToken'] = accessToken;
+              }
+
               final headers = error.requestOptions.headers;
-              if (headers.containsKey('access_token')) {
-                headers['Authorization'] = 'Bearer: $accessToken';
+              if (headers.containsKey('accessToken')) {
+                headers['Authorization'] = 'Bearer $accessToken';
                 options.headers = headers;
               }
 
-              final response = await Dio().request<dynamic>(
-                error.requestOptions.path,
+              final client = Dio();
+              final response = await client.request<dynamic>(
+                '${error.requestOptions.baseUrl}${error.requestOptions.path}',
                 data: error.requestOptions.data,
                 queryParameters: error.requestOptions.queryParameters,
                 options: options,
               );
 
-              debugPrint("Refresh-токен успешно обновлен.");
+              MyLogger.i('Refresh-токен успешно обновлен.');
               return handler.resolve(response);
             } on DioException catch (e) {
-              debugPrint("DioInterceptorError -> $e");
-              debugPrint("Refresh-токен не обновлен.");
-              navService.pushNamedAndRemoveUntil('/welcome');
+              MyLogger.e('DioInterceptorError -> $e');
+              MyLogger.i('Refresh-токен не обновлен.');
+              navService.pushNamedAndRemoveUntil(AppRoutes.start);
               rethrow;
             }
           }
         },
       ));
     }
-
-    client.options.followRedirects = false;
-    client.options.validateStatus = (status) {
-      return true;
-    };
 
     return client;
   }
