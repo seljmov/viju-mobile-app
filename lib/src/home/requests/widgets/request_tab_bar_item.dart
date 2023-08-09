@@ -16,25 +16,22 @@ class RequestTabBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titlePickedStyle = context.textTheme.titleMedium!.copyWith(
-      color: kDarkTextPrimaryColor,
+    final titlePickedStyle = context.textTheme.titleSmall!.copyWith(
+      color: Colors.white,
     );
     final titleStyle = titlePickedStyle.copyWith(
-      color: context.isDarkMode
-          ? kDarkTextSecondaryColor
-          : kLightTextSecondaryColor,
+      color: kGray3Color,
+      fontWeight: FontWeight.w500,
     );
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: isPicked
-            ? kPrimaryLighterColor
-            : context.currentTheme.cardTheme.color,
+        color: isPicked ? kGray3Color : context.currentTheme.cardTheme.color,
         borderRadius: const BorderRadius.all(
           Radius.circular(8),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Text(
           title,
           style: isPicked ? titlePickedStyle : titleStyle,

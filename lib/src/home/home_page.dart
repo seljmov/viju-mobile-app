@@ -42,7 +42,6 @@ class _HomePageState extends State<HomePage> {
                 style: context.textTheme.displaySmall,
               ),
             ),
-            const SizedBox(height: 16),
             BlocProvider(
               create: (_) => RequestBloc(
                 initialState: const RequestState.initial(),

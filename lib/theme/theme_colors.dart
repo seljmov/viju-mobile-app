@@ -20,7 +20,7 @@ final kLightTextSecondaryColor = kLightTextPrimaryColor.withOpacity(0.75);
 
 const kGray1Color = Color(0xFFDADADA);
 const kGray2Color = Color(0xFF8E8E93);
-const kGray3Color = Color(0xFF636366);
+const kGray3Color = Color(0xFF4F4F4F);
 
 const kRedColor = Color(0xFFFF453A);
 const kDarkRedColor = Color(0xFFB73E37);
