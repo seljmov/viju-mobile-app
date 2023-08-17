@@ -13,6 +13,8 @@ import 'core/helpers/env_helper.dart';
 import 'core/helpers/message_helper.dart';
 import 'core/repositories/tokens/tokens_repository_impl.dart';
 import 'core/repositories/user/user_repository.dart';
+import 'src/home/requests/bloc/request_bloc.dart';
+import 'src/home/requests/repositories/request_repository.dart';
 import 'src/welcome/auth/auth_bloc.dart';
 import 'src/welcome/auth/auth_scope.dart';
 import 'src/welcome/auth/repositories/auth_repository.dart';
@@ -58,6 +60,12 @@ class AppConfigurator extends StatelessWidget {
             initialState: const AuthState.initial(),
             tokensRepository: TokensRepositoryImpl(),
             authRepository: AuthRepositoryImpl(),
+          ),
+        ),
+        BlocProvider<RequestBloc>(
+          create: (_) => RequestBloc(
+            initialState: const RequestState.initial(),
+            requestRepository: RequestRepositoryImpl(),
           ),
         ),
       ],

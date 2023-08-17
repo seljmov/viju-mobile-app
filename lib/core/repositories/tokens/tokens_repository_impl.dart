@@ -50,7 +50,6 @@ class TokensRepositoryImpl implements TokensRepository {
       final response = await DioHelper.postData(
         url: '/auth/refresh',
         data: data,
-        useAuthrorization: false,
         useAuthErrorInterceptor: false,
       );
 

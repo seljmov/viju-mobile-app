@@ -14,7 +14,9 @@ class LoginFormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginController = TextEditingController(text: '_zclient');
+    final loginFormKey = GlobalKey<FormFieldState>();
     final passwordController = TextEditingController(text: 'client');
+    final passwordFormKey = GlobalKey<FormFieldState>();
     final emptyNotifier = ValueNotifier<bool>(
       loginController.text.isEmpty || passwordController.text.isEmpty,
     );
@@ -37,10 +39,13 @@ class LoginFormWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 45),
                 TextFormField(
+                  key: loginFormKey,
                   controller: loginController,
-                  onChanged: (value) => emptyNotifier.value =
-                      loginController.text.isEmpty ||
-                          passwordController.text.isEmpty,
+                  onChanged: (value) {
+                    loginFormKey.currentState?.validate();
+                    emptyNotifier.value = loginController.text.isEmpty ||
+                        passwordController.text.isEmpty;
+                  },
                   validator: _validateLogin,
                   style: TextStyle(
                     fontSize: 16,
@@ -55,10 +60,13 @@ class LoginFormWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
+                  key: passwordFormKey,
                   controller: passwordController,
-                  onChanged: (value) => emptyNotifier.value =
-                      loginController.text.isEmpty ||
-                          passwordController.text.isEmpty,
+                  onChanged: (value) {
+                    passwordFormKey.currentState?.validate();
+                    emptyNotifier.value = loginController.text.isEmpty ||
+                        passwordController.text.isEmpty;
+                  },
                   validator: _validatePassword,
                   style: TextStyle(
                     fontSize: 16,

@@ -28,6 +28,12 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Приложение использует камеру для добавления фотографий к заявкам</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Приложение использует микрофон для загрузки видео</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Приложение использует галерею для добавления фотографий к заявкам</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

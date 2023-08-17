@@ -16,8 +16,7 @@ abstract class DioHelper {
   /// Отправить данные
   static Future<Response> postData({
     required String url,
-    dynamic data,
-    bool useAuthrorization = true,
+    dynamic data = const {},
     bool useAuthErrorInterceptor = true,
   }) async {
     final dio = getDioClient(useAuthErrorInterceptor);
@@ -29,8 +28,8 @@ abstract class DioHelper {
     final client = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 16),
-        receiveTimeout: const Duration(seconds: 16),
+        connectTimeout: const Duration(seconds: 32),
+        receiveTimeout: const Duration(seconds: 32),
       ),
     );
 
@@ -38,14 +37,26 @@ abstract class DioHelper {
       client.interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) async {
           final accessToken = await _tokensRepository.getAccessToken();
-          final body = Map.from(options.data ?? {});
-          body['accessToken'] = accessToken;
-          options.data = body;
+
+          final headers = Map<String, dynamic>.from(options.headers);
+          headers['accept'] = 'application/json';
+          headers['Content-Type'] = 'application/json';
+
+          if (accessToken != null && options.data is Map) {
+            final body = Map.from(options.data ?? {});
+            body['accessToken'] = accessToken;
+            headers['Authorization'] = 'Bearer $accessToken';
+            options.data = body;
+          }
+
+          options.headers = headers;
           return handler.next(options);
         },
         onError: (DioException error, handler) async {
           if (error.response?.statusCode == 400) {
             try {
+              navService.pushNamedAndRemoveUntil(AppRoutes.loading);
+
               final tokensRepository = TokensRepositoryImpl();
               await tokensRepository.updateTokensFromServer();
 
@@ -63,7 +74,7 @@ abstract class DioHelper {
               }
 
               final headers = error.requestOptions.headers;
-              if (headers.containsKey('accessToken')) {
+              if (headers.containsKey('Authorization')) {
                 headers['Authorization'] = 'Bearer $accessToken';
                 options.headers = headers;
               }
@@ -79,8 +90,8 @@ abstract class DioHelper {
               MyLogger.i('Refresh-токен успешно обновлен.');
               return handler.resolve(response);
             } on DioException catch (e) {
-              MyLogger.e('DioInterceptorError -> $e');
               MyLogger.i('Refresh-токен не обновлен.');
+              MyLogger.e('DioInterceptorError -> $e');
               navService.pushNamedAndRemoveUntil(AppRoutes.start);
               rethrow;
             }

@@ -7,6 +7,7 @@ import '../../theme/theme_constants.dart';
 import '../../theme/theme_extention.dart';
 import '../welcome/auth/auth_scope.dart';
 import 'requests/bloc/request_bloc.dart';
+import 'requests/bloc/request_scope.dart';
 import 'requests/repositories/request_repository.dart';
 import 'requests/request_screen.dart';
 
@@ -21,35 +22,41 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () => AuthScope.loggedOut(context),
-            icon: SvgPicture.asset(AppIcons.logout),
-          ),
-          const SizedBox(width: 8),
-        ],
+    return BlocProvider(
+      create: (_) => RequestBloc(
+        initialState: const RequestState.initial(),
+        requestRepository: RequestRepositoryImpl(),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: kThemeDefaultPadding,
-              child: Text(
-                'Заявки',
-                style: context.textTheme.displaySmall,
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            actions: [
+              IconButton(
+                onPressed: () => AuthScope.loggedOut(context),
+                icon: SvgPicture.asset(AppIcons.logout),
               ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => RequestScope.openAddRequestPage(context),
+            child: SvgPicture.asset(AppIcons.add),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: kThemeDefaultPadding,
+                  child: Text(
+                    'Заявки',
+                    style: context.textTheme.displaySmall,
+                  ),
+                ),
+                const RequestScreen(),
+              ],
             ),
-            BlocProvider(
-              create: (_) => RequestBloc(
-                initialState: const RequestState.initial(),
-                requestRepository: RequestRepositoryImpl(),
-              ),
-              child: const RequestScreen(),
-            ),
-          ],
+          ),
         ),
       ),
     );
