@@ -42,7 +42,7 @@ class _RequestScreenState extends State<RequestScreen> {
       child: BlocBuilder<RequestBloc, RequestState>(
         builder: (context, state) => state.maybeMap(
           loaded: (state) => RequestTabBar(
-            requests: state.requests,
+            requests: state.requests.reversed.toList(),
             initialIndex: state.status,
             onTap: (status) {
               RequestScope.load(context, status);

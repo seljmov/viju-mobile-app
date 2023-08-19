@@ -364,11 +364,13 @@ class RequestAddPage extends StatelessWidget {
                             final images = imageFilesNotifier.value
                                 .map((el) => el.file)
                                 .toList();
-                            Future.microtask(() => RequestScope.createRequest(
-                                  context,
-                                  createDto,
-                                  images,
-                                )).whenComplete(() => Navigator.pop(context));
+                            await Future.microtask(
+                              () => RequestScope.createRequest(
+                                context,
+                                createDto,
+                                images,
+                              ),
+                            ).whenComplete(() => Navigator.pop(context));
                           },
                         );
                       },

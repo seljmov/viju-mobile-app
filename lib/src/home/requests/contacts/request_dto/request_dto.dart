@@ -32,6 +32,20 @@ class RequestDto with _$RequestDto {
     required List<RequestDocumentDto> documents,
   }) = _RequestDto;
 
+  String get volume {
+    var volume = '';
+    if (volumeInCubicMeters != null) {
+      volume += '$volumeInCubicMeters м³';
+    }
+    if (volumeInTons != null) {
+      if (volume.isNotEmpty) {
+        volume += '/';
+      }
+      volume += '$volumeInTons т';
+    }
+    return volume;
+  }
+
   /// Возвращает последний статус заявки
   RequestStatusDto get lastStatus {
     statuses.sort((a, b) => b.createdTimestamp.compareTo(a.createdTimestamp));
