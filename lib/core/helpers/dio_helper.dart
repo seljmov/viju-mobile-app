@@ -55,7 +55,7 @@ abstract class DioHelper {
         onError: (DioException error, handler) async {
           if (error.response?.statusCode == 400) {
             try {
-              navService.pushNamedAndRemoveUntil(AppRoutes.loading);
+              //navService.pushNamedAndRemoveUntil(AppRoutes.loading);
 
               final tokensRepository = TokensRepositoryImpl();
               await tokensRepository.updateTokensFromServer();

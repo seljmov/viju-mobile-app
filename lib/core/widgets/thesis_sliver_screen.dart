@@ -35,7 +35,6 @@ class ThesisSliverScreen extends StatelessWidget {
       valueListenable: detector,
       builder: (context, visibility, _) {
         return Scaffold(
-          //resizeToAvoidBottomInset: true,
           appBar: AppBar(
             leading: Padding(
               padding: const EdgeInsets.only(left: 8),
@@ -56,7 +55,7 @@ class ThesisSliverScreen extends StatelessWidget {
                 visible: !visibility && title.isNotEmpty,
                 child: Text(
                   title,
-                  style: context.textTheme.headlineSmall,
+                  style: context.textTheme.titleMedium,
                 ),
               ),
             ),
@@ -64,7 +63,6 @@ class ThesisSliverScreen extends StatelessWidget {
           ),
           floatingActionButton: floatingActionButton,
           body: SingleChildScrollView(
-            padding: bodyPadding ?? kThemeDefaultPaddingHorizontal,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,

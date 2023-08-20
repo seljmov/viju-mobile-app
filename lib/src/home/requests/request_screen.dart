@@ -26,7 +26,8 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   Widget build(BuildContext context) {
     final currentStatusNotifier = ValueNotifier<int>(RequestStatuses.New);
-    return BlocListener<RequestBloc, RequestState>(
+    return BlocConsumer<RequestBloc, RequestState>(
+      bloc: RequestScope.of(context),
       listener: (context, state) => state.mapOrNull(
         initial: (state) => RequestScope.load(context, RequestStatuses.New),
         openedAddRequestPage: (state) => navService.pushNamed(
@@ -40,17 +41,15 @@ class _RequestScreenState extends State<RequestScreen> {
           () => RequestScope.load(context, currentStatusNotifier.value),
         ),
       ),
-      child: BlocBuilder<RequestBloc, RequestState>(
-        builder: (context, state) => state.maybeMap(
-          loaded: (state) => RequestTabBar(
-            currentStatus: currentStatusNotifier.value,
-            onTap: (status) {
-              //RequestScope.load(context, status);
-              currentStatusNotifier.value = status;
-            },
-          ),
-          orElse: () => const Center(child: ThesisProgressBar()),
+      builder: (context, state) => state.maybeMap(
+        loaded: (state) => RequestTabBar(
+          currentStatus: currentStatusNotifier.value,
+          onTap: (status) {
+            //RequestScope.load(context, status);
+            currentStatusNotifier.value = status;
+          },
         ),
+        orElse: () => const Center(child: ThesisProgressBar()),
       ),
     );
   }

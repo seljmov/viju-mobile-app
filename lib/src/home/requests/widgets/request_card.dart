@@ -123,10 +123,11 @@ class RequestCard extends StatelessWidget {
               Visibility(
                 visible: status == RequestStatuses.New,
                 child: IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final reasonController = TextEditingController();
                     final isEmptyNotifier = ValueNotifier<bool>(true);
-                    ThesisBottomSheep.showBarModal(
+                    var removed = false;
+                    await ThesisBottomSheep.showBarModalAsync(
                       context,
                       builder: (context) => Padding(
                         padding: kBottomSheepDefaultPaddingHorizontal,
@@ -170,7 +171,7 @@ class RequestCard extends StatelessWidget {
                                         child: ThesisButton.fromText(
                                           text: 'Готово',
                                           isDisabled: isEmpty,
-                                          onPressed: () {
+                                          onPressed: () async {
                                             final cancelDto = RequestCancelDto(
                                               id: request.id,
                                               note: reasonController.text,
@@ -179,6 +180,7 @@ class RequestCard extends StatelessWidget {
                                               context,
                                               cancelDto,
                                             );
+                                            removed = true;
                                             Navigator.of(context).pop();
                                           },
                                         ),
@@ -191,7 +193,11 @@ class RequestCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                    );
+                    ).whenComplete(() {
+                      if (removed) {
+                        RequestScope.load(context, status);
+                      }
+                    });
                   },
                   icon: SvgPicture.asset(AppIcons.delete),
                 ),

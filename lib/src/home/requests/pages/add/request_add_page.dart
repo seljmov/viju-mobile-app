@@ -8,6 +8,7 @@ import '../../../../../core/widgets/thesis_drop_down_button.dart';
 import '../../../../../core/widgets/thesis_sliver_screen.dart';
 import '../../../../../core/widgets/thesis_split_screen.dart';
 import '../../../../../theme/theme_colors.dart';
+import '../../../../../theme/theme_constants.dart';
 import '../../../../../theme/theme_extention.dart';
 import '../../bloc/request_scope.dart';
 import '../../contacts/contractor/address_dto/address_dto.dart';
@@ -75,6 +76,7 @@ class RequestAddPage extends StatelessWidget {
                   icon: SvgPicture.asset(AppIcons.close),
                   onPressed: () => Navigator.pop(context),
                 ),
+                bodyPadding: kThemeDefaultPaddingHorizontal,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.start,

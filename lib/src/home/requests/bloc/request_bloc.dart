@@ -11,7 +11,6 @@ import '../contacts/removal_dto/removal_dto.dart';
 import '../contacts/request_cancel_dto/request_cancel_dto.dart';
 import '../contacts/request_create_dto/request_create_dto.dart';
 import '../contacts/request_dto/request_dto.dart';
-import '../contacts/request_statuses.dart';
 import '../contacts/waste_dto/waste_dto.dart';
 import '../repositories/request_repository.dart';
 
@@ -40,6 +39,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
       _RequestLoadEvent event, Emitter<RequestState> emit) async {
     try {
       emit(const RequestState.loading());
+      await Future.delayed(const Duration(seconds: 1));
       final requests = await _requestRepository.getRequests(event.status);
       emit(RequestState.loaded(status: event.status, requests: requests));
     } on Exception catch (e) {
@@ -115,7 +115,6 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     try {
       final result = await _requestRepository.cancelRequest(event.cancelDto);
       if (result) {
-        this.add(const RequestEvent.load(status: RequestStatuses.New));
         emit(const RequestState.initial());
       } else {
         emit(
