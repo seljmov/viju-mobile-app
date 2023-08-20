@@ -9,6 +9,15 @@ abstract class RequestStatuses {
 
   static const int count = 6;
 
+  static Map<int, String> get toDictionary => {
+        New: statusName(New),
+        Agreed: statusName(Agreed),
+        InProgress: statusName(InProgress),
+        Executed: statusName(Executed),
+        Completed: statusName(Completed),
+        Canceled: statusName(Canceled),
+      };
+
   static List<String> get names => [
         statusName(New),
         statusName(Agreed),
