@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/constants/assets_constants.dart';
-import '../../theme/theme_constants.dart';
-import '../../theme/theme_extention.dart';
+import '../../core/widgets/thesis_sliver_screen.dart';
 import '../welcome/auth/auth_scope.dart';
 import 'requests/bloc/request_bloc.dart';
 import 'requests/bloc/request_scope.dart';
@@ -28,35 +27,22 @@ class _HomePageState extends State<HomePage> {
         requestRepository: RequestRepositoryImpl(),
       ),
       child: Builder(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            actions: [
-              IconButton(
-                onPressed: () => AuthScope.loggedOut(context),
-                icon: SvgPicture.asset(AppIcons.logout),
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
+        builder: (context) => ThesisSliverScreen(
+          title: 'Заявки',
+          leading: const SizedBox.shrink(),
+          actions: [
+            IconButton(
+              onPressed: () => AuthScope.loggedOut(context),
+              icon: SvgPicture.asset(AppIcons.logout),
+            ),
+            const SizedBox(width: 8),
+          ],
+          bodyPadding: EdgeInsets.zero,
           floatingActionButton: FloatingActionButton(
             onPressed: () => RequestScope.openAddRequestPage(context),
             child: SvgPicture.asset(AppIcons.add),
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: kThemeDefaultPadding,
-                  child: Text(
-                    'Заявки',
-                    style: context.textTheme.displaySmall,
-                  ),
-                ),
-                const RequestScreen(),
-              ],
-            ),
-          ),
+          child: const RequestScreen(),
         ),
       ),
     );

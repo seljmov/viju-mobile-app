@@ -15,6 +15,8 @@ class ThesisSliverScreen extends StatelessWidget {
     this.floatingActionButton,
     this.leading,
     this.leadingCallback,
+    this.actions,
+    this.bodyPadding,
   });
 
   final String title;
@@ -22,6 +24,8 @@ class ThesisSliverScreen extends StatelessWidget {
   final Widget? floatingActionButton;
   final Widget? leading;
   final VoidCallback? leadingCallback;
+  final List<Widget>? actions;
+  final EdgeInsetsGeometry? bodyPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -56,28 +60,33 @@ class ThesisSliverScreen extends StatelessWidget {
                 ),
               ),
             ),
+            actions: actions,
           ),
           floatingActionButton: floatingActionButton,
           body: SingleChildScrollView(
-            padding: kThemeDefaultPaddingHorizontal,
+            padding: bodyPadding ?? kThemeDefaultPaddingHorizontal,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                VisibilityDetector(
-                  key: UniqueKey(),
-                  onVisibilityChanged: (visibilityInfo) {
-                    final count = visibilityInfo.visibleFraction;
-                    final isVisibility = count > 0.250;
-                    detector.value = isVisibility;
-                  },
-                  child: Text(
-                    title,
-                    style: context.textTheme.displaySmall,
+                Padding(
+                  padding: kThemeDefaultPaddingHorizontal,
+                  child: VisibilityDetector(
+                    key: UniqueKey(),
+                    onVisibilityChanged: (visibilityInfo) {
+                      final count = visibilityInfo.visibleFraction;
+                      final isVisibility = count > 0.250;
+                      detector.value = isVisibility;
+                    },
+                    child: Text(
+                      title,
+                      style: context.textTheme.displaySmall,
+                    ),
                   ),
                 ),
+                const SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: bodyPadding ?? kThemeDefaultPaddingHorizontal,
                   child: child,
                 ),
               ],

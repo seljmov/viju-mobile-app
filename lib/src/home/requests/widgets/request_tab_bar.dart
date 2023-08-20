@@ -40,8 +40,6 @@ class _RequestTabBarState extends State<RequestTabBar> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
-        GlobalKey<RefreshIndicatorState>();
     final initialIndex = statusesDictinary.keys.toList().indexOf(
           widget.currentStatus,
         );
@@ -91,41 +89,40 @@ class _RequestTabBarState extends State<RequestTabBar> {
                 }
 
                 final requests = (snapshot.data ?? []).reversed.toList();
-                return Visibility(
-                  visible: requests.isNotEmpty,
-                  child: RefreshIndicator(
-                    key: refreshIndicatorKey,
-                    onRefresh: () async {
-                      setState(() {
-                        future = requestRepository.getRequests(
-                          statusesDictinary.keys.elementAt(currentIndex),
-                        );
-                      });
-                    },
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      future = requestRepository.getRequests(
+                        statusesDictinary.keys.elementAt(currentIndex),
+                      );
+                    });
+                  },
+                  child: Visibility(
+                    visible: requests.isNotEmpty,
                     child: RequestList(
                       requests: requests,
                       status: statusesDictinary.keys.elementAt(currentIndex),
                     ),
-                  ),
-                  replacement: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 40),
-                      SvgPicture.asset(AppIcons.emptyRequests),
-                      const SizedBox(height: 32),
-                      Text(
-                        'Здесь пусто',
-                        style: context.textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.bold,
+                    replacement: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 40),
+                        SvgPicture.asset(AppIcons.emptyRequests),
+                        const SizedBox(height: 32),
+                        Text(
+                          'Здесь пусто',
+                          style: context.textTheme.headlineSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Нет заявок в статусе "${statusesDictinary.values.elementAt(currentIndex)}"',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          'Нет заявок в статусе "${statusesDictinary.values.elementAt(currentIndex)}"',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

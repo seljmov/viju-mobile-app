@@ -19,11 +19,14 @@ class RequestList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimationLimiter(
-      child: SingleChildScrollView(
-        physics: kDefaultPhysics,
-        child: Column(
-          children: List.generate(requests.length, (index) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.75,
+      child: AnimationLimiter(
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: kDefaultPhysics,
+          itemCount: requests.length,
+          itemBuilder: (context, index) {
             return AnimationConfiguration.staggeredList(
               position: index,
               duration: const Duration(milliseconds: 375),
@@ -35,8 +38,9 @@ class RequestList extends StatelessWidget {
                         request: requests[index],
                         status: status,
                       ),
-                      const Visibility(
-                        child: Padding(
+                      Visibility(
+                        visible: index != requests.length - 1,
+                        child: const Padding(
                           padding: kThemeDefaultPaddingHorizontal,
                           child: Divider(color: kGray2Color),
                         ),
@@ -46,7 +50,7 @@ class RequestList extends StatelessWidget {
                 ),
               ),
             );
-          }),
+          },
         ),
       ),
     );
