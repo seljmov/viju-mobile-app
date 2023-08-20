@@ -45,6 +45,15 @@ dev_dependencies:
   build_runner: ^2.3.3
   freezed: ^2.3.2
   json_serializable: ^6.5.4
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  ios: true
+  android: true
+  image_path_ios: 'assets/logo/app_logo.jpg'
+  image_path_android: 'assets/logo/app_logo.jpg'
+  adaptive_icon_background: 'assets/logo/background.png'
+  adaptive_icon_foreground: 'assets/logo/foreground.png'
 
 flutter:
   uses-material-design: true
