@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/theme_colors.dart';
 import '../../theme/theme_constants.dart';
-import 'bottom_sheep/thesis_bottom_sheep_header.dart';
+import '../../theme/theme_extention.dart';
 import 'button/thesis_button.dart';
 import 'button/thesis_outlined_button.dart';
 import 'thesis_bottom_sheep.dart';
@@ -18,14 +18,20 @@ class ThesisBottomSheepSelector {
     T? picked,
   }) async {
     final checkedNotifier = ValueNotifier<T?>(picked);
-    await ThesisBottomSheep.showModalAsync(
+    await ThesisBottomSheep.showBarModalAsync(
       context,
       expand: false,
-      header: ThesisBottomSheepHeader(title: title),
-      child: Padding(
-        padding: kThemeDefaultPaddingHorizontal,
-        child: Column(
+      builder: (context) => Padding(
+        padding: kBottomSheepDefaultPaddingHorizontal,
+        child: Wrap(
           children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Text(
+                title,
+                style: context.textTheme.headlineSmall,
+              ),
+            ),
             ValueListenableBuilder<T?>(
               valueListenable: checkedNotifier,
               builder: (context, checked, child) {
@@ -82,7 +88,7 @@ class ThesisBottomSheepSelector {
                 );
               },
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 48),
             Row(
               children: [
                 Expanded(
@@ -109,7 +115,6 @@ class ThesisBottomSheepSelector {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),

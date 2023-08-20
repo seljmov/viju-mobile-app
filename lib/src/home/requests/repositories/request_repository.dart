@@ -2,6 +2,7 @@ import '../../../../core/helpers/dio_helper.dart';
 import '../../../../core/helpers/my_logger.dart';
 import '../contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../contacts/removal_dto/removal_dto.dart';
+import '../contacts/request_cancel_dto/request_cancel_dto.dart';
 import '../contacts/request_create_dto/request_create_dto.dart';
 import '../contacts/request_dto/request_dto.dart';
 import '../contacts/waste_dto/waste_dto.dart';
@@ -16,6 +17,8 @@ abstract class IRequestRepository {
   Future<List<RemovalDto>> getRemovals();
 
   Future<int?> createRequest(RequestCreateDto requestCreateDto);
+
+  Future<bool> cancelRequest(RequestCancelDto requestCancelDto);
 }
 
 class RequestRepositoryImpl implements IRequestRepository {
@@ -125,6 +128,28 @@ class RequestRepositoryImpl implements IRequestRepository {
       switch (response.statusCode) {
         case 200:
           return response.data['id'];
+        default:
+          MyLogger.e(
+            'Что-то пошло не так... Попробуйте снова. code = ${response.statusCode}',
+          );
+          throw Exception('Что-то пошло не так... Попробуйте снова.');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> cancelRequest(RequestCancelDto requestCancelDto) async {
+    try {
+      final response = await DioHelper.postData(
+        url: '/request/cancel',
+        data: requestCancelDto.toJson(),
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          return true;
         default:
           MyLogger.e(
             'Что-то пошло не так... Попробуйте снова. code = ${response.statusCode}',

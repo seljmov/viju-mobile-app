@@ -53,38 +53,45 @@ class AppConfigurator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthBloc>(
-          create: (context) => AuthBloc(
-            initialState: const AuthState.initial(),
-            tokensRepository: TokensRepositoryImpl(),
-            authRepository: AuthRepositoryImpl(),
-          ),
-        ),
-        BlocProvider<RequestBloc>(
-          create: (_) => RequestBloc(
-            initialState: const RequestState.initial(),
-            requestRepository: RequestRepositoryImpl(),
-          ),
-        ),
+    return Localizations(
+      locale: const Locale('ru', 'RU'),
+      delegates: const <LocalizationsDelegate<dynamic>>[
+        DefaultWidgetsLocalizations.delegate,
+        DefaultMaterialLocalizations.delegate,
       ],
-      child: AdaptiveTheme(
-        light: lightThemeData,
-        dark: darkThemeData,
-        initial: savedTheme ?? AdaptiveThemeMode.light,
-        builder: (light, dark) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            scaffoldMessengerKey: MessageHelper.rootScaffoldMessengerKey,
-            title: 'Mobile app',
-            navigatorKey: NavigationService.navigationKey,
-            onGenerateRoute: AppRoutes.generateRoute,
-            theme: light,
-            darkTheme: dark,
-            home: const AppRunner(),
-          );
-        },
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc(
+              initialState: const AuthState.initial(),
+              tokensRepository: TokensRepositoryImpl(),
+              authRepository: AuthRepositoryImpl(),
+            ),
+          ),
+          BlocProvider<RequestBloc>(
+            create: (_) => RequestBloc(
+              initialState: const RequestState.initial(),
+              requestRepository: RequestRepositoryImpl(),
+            ),
+          ),
+        ],
+        child: AdaptiveTheme(
+          light: lightThemeData,
+          dark: darkThemeData,
+          initial: savedTheme ?? AdaptiveThemeMode.light,
+          builder: (light, dark) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              scaffoldMessengerKey: MessageHelper.rootScaffoldMessengerKey,
+              title: 'Mobile app',
+              navigatorKey: NavigationService.navigationKey,
+              onGenerateRoute: AppRoutes.generateRoute,
+              theme: light,
+              darkTheme: dark,
+              home: const AppRunner(),
+            );
+          },
+        ),
       ),
     );
   }

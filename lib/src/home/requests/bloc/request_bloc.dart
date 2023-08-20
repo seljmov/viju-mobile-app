@@ -8,8 +8,10 @@ import '../../../../core/helpers/my_logger.dart';
 import '../../../../core/widgets/images/image_helper.dart';
 import '../contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../contacts/removal_dto/removal_dto.dart';
+import '../contacts/request_cancel_dto/request_cancel_dto.dart';
 import '../contacts/request_create_dto/request_create_dto.dart';
 import '../contacts/request_dto/request_dto.dart';
+import '../contacts/request_statuses.dart';
 import '../contacts/waste_dto/waste_dto.dart';
 import '../repositories/request_repository.dart';
 
@@ -29,6 +31,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
         load: (event) => _load(event, emit),
         openAddRequestPage: (event) => _openAddRequestPage(event, emit),
         createRequest: (event) => _createRequest(event, emit),
+        cancelRequest: (event) => _cancelRequest(event, emit),
       ),
     );
   }
@@ -106,6 +109,27 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
       rethrow;
     }
   }
+
+  Future<void> _cancelRequest(
+      _RequestCancelRequestEvent event, Emitter<RequestState> emit) async {
+    try {
+      final result = await _requestRepository.cancelRequest(event.cancelDto);
+      if (result) {
+        this.add(const RequestEvent.load(status: RequestStatuses.New));
+        emit(const RequestState.initial());
+      } else {
+        emit(
+          const RequestState.error(
+            message: 'Что-то пошло не так... Попробуйте снова.',
+          ),
+        );
+      }
+    } on Exception catch (e) {
+      emit(RequestState.error(message: e.getMessage));
+      MyLogger.e(e.getMessage);
+      rethrow;
+    }
+  }
 }
 
 /// События заявок
@@ -125,6 +149,11 @@ abstract class RequestEvent with _$RequestEvent {
     required RequestCreateDto createDto,
     required List<File?> images,
   }) = _RequestCreateRequestEvent;
+
+  /// Событие отмены заявки
+  const factory RequestEvent.cancelRequest({
+    required RequestCancelDto cancelDto,
+  }) = _RequestCancelRequestEvent;
 }
 
 /// Состояния заявок

@@ -28,6 +28,7 @@ class _RequestScreenState extends State<RequestScreen> {
     final currentStatusNotifier = ValueNotifier<int>(RequestStatuses.New);
     return BlocListener<RequestBloc, RequestState>(
       listener: (context, state) => state.mapOrNull(
+        initial: (state) => RequestScope.load(context, RequestStatuses.New),
         openedAddRequestPage: (state) => navService.pushNamed(
           AppRoutes.addRequest,
           args: {
