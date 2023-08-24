@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
-import '../../src/home/home_page.dart';
+import '../../src/home/requests/components/request_page.dart';
 import '../../src/home/requests/contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../../src/home/requests/contacts/removal_dto/removal_dto.dart';
 import '../../src/home/requests/contacts/waste_dto/waste_dto.dart';
@@ -16,8 +16,8 @@ abstract class AppRoutes {
   static const String start = '/';
   static const String loading = '/loading';
   static const String login = '/login';
-  static const String home = '/home';
-  static const String addRequest = '/addRequest';
+  static const String home = '/requests';
+  static const String addRequest = '/requests/add';
 
   /// Сгенерировать роут
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -30,7 +30,7 @@ abstract class AppRoutes {
         case login:
           return MaterialPageRoute(builder: (_) => const LoginPage());
         case home:
-          return MaterialPageRoute(builder: (_) => const HomePage());
+          return MaterialPageRoute(builder: (_) => const RequestPage());
         case addRequest:
           if (settings.arguments == null) {
             MessageHelper.showError(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../core/constants/assets_constants.dart';
@@ -10,7 +11,7 @@ import '../../../../../core/widgets/thesis_split_screen.dart';
 import '../../../../../theme/theme_colors.dart';
 import '../../../../../theme/theme_constants.dart';
 import '../../../../../theme/theme_extention.dart';
-import '../../bloc/request_scope.dart';
+import '../../components/request_data_provider.dart';
 import '../../contacts/contractor/address_dto/address_dto.dart';
 import '../../contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../../contacts/contractor/location_dto/location_dto.dart';
@@ -366,13 +367,11 @@ class RequestAddPage extends StatelessWidget {
                             final images = imageFilesNotifier.value
                                 .map((el) => el.file)
                                 .toList();
-                            await Future.microtask(
-                              () => RequestScope.createRequest(
-                                context,
-                                createDto,
-                                images,
-                              ),
-                            ).whenComplete(() => Navigator.pop(context));
+
+                            await context
+                                .read<RequestDataProvider>()
+                                .createRequest(createDto, images)
+                                .whenComplete(() => Navigator.pop(context));
                           },
                         );
                       },
