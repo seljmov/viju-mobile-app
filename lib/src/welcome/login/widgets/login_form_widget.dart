@@ -17,6 +17,7 @@ class LoginFormWidget extends StatelessWidget {
     final loginFormKey = GlobalKey<FormFieldState>();
     final passwordController = TextEditingController(text: 'client');
     final passwordFormKey = GlobalKey<FormFieldState>();
+    final passwordObscureNotifier = ValueNotifier<bool>(true);
     final emptyNotifier = ValueNotifier<bool>(
       loginController.text.isEmpty || passwordController.text.isEmpty,
     );
@@ -59,25 +60,48 @@ class LoginFormWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  key: passwordFormKey,
-                  controller: passwordController,
-                  onChanged: (value) {
-                    passwordFormKey.currentState?.validate();
-                    emptyNotifier.value = loginController.text.isEmpty ||
-                        passwordController.text.isEmpty;
+                ValueListenableBuilder(
+                  valueListenable: passwordObscureNotifier,
+                  builder: (context, obscure, child) {
+                    return TextFormField(
+                      key: passwordFormKey,
+                      controller: passwordController,
+                      obscureText: obscure,
+                      onChanged: (value) {
+                        passwordFormKey.currentState?.validate();
+                        emptyNotifier.value = loginController.text.isEmpty ||
+                            passwordController.text.isEmpty;
+                      },
+                      validator: _validatePassword,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: context.textPrimaryColor,
+                      ),
+                      decoration: InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelText: 'Пароль',
+                        hintText: 'Введите пароль',
+                        suffixIcon: Visibility(
+                          visible: obscure,
+                          child: IconButton(
+                            onPressed: () =>
+                                passwordObscureNotifier.value = false,
+                            icon: SvgPicture.asset(
+                              AppIcons.eye,
+                            ),
+                          ),
+                          replacement: IconButton(
+                            onPressed: () =>
+                                passwordObscureNotifier.value = true,
+                            icon: SvgPicture.asset(
+                              AppIcons.eyeOff,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
                   },
-                  validator: _validatePassword,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: context.textPrimaryColor,
-                  ),
-                  decoration: const InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    labelText: 'Пароль',
-                    hintText: 'Введите пароль',
-                  ),
                 ),
                 const SizedBox(height: 24),
                 ValueListenableBuilder(

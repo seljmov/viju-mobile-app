@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
         errorLogin: (state) => MessageHelper.showError(state.message),
         successLogin: (state) => navService.pushNamedAndRemoveUntil(
           AppRoutes.home,
+          args: state.role,
         ),
         orElse: () => const LoginFormWidget(),
       ),

@@ -136,7 +136,7 @@ final lightThemeData = ThemeData(
   inputDecorationTheme: InputDecorationTheme(
     errorMaxLines: 4,
     floatingLabelStyle: const TextStyle(
-      fontSize: 14,
+      fontSize: 18,
       letterSpacing: 0.15,
       fontWeight: FontWeight.w400,
       color: kLightTextPrimaryColor,

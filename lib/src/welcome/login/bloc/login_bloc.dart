@@ -61,7 +61,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         tokens.refreshToken,
       );
       await _userRepository.saveRole(tokens.role);
-      emit(const LoginState.successLogin());
+      emit(LoginState.successLogin(role: tokens.role));
     } on Exception catch (e) {
       emit(LoginState.errorLogin(message: e.getMessage));
       MyLogger.e(e.getMessage);
@@ -89,7 +89,9 @@ abstract class LoginState with _$LoginState {
   const factory LoginState.loading() = _LoginLoadingState;
 
   /// Состояние успешной авторизации
-  const factory LoginState.successLogin() = _LoginSuccessState;
+  const factory LoginState.successLogin({
+    required int role,
+  }) = _LoginSuccessState;
 
   /// Состояние ошибки авторизации
   const factory LoginState.errorLogin({

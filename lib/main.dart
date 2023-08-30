@@ -68,6 +68,7 @@ class AppConfigurator extends StatelessWidget {
               initialState: const AuthState.initial(),
               tokensRepository: TokensRepositoryImpl(),
               authRepository: AuthRepositoryImpl(),
+              userRepository: UserRepositoryImpl(),
             ),
           ),
           ChangeNotifierProvider<RequestDataProvider>(
@@ -124,8 +125,9 @@ class _AppRunnerState extends State<AppRunner> {
           unauthenticated: (_) => navService.pushNamedAndRemoveUntil(
             AppRoutes.login,
           ),
-          authenticated: (_) => navService.pushNamedAndRemoveUntil(
+          authenticated: (state) => navService.pushNamedAndRemoveUntil(
             AppRoutes.home,
+            args: state.role,
           ),
           orElse: () => const SplashScreen(),
         ),

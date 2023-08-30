@@ -6,5 +6,7 @@ abstract class AppIcons {
   static String get delete => 'assets/icons/icon_delete.svg';
   static String get logout => 'assets/icons/icon_logout.svg';
   static String get add => 'assets/icons/icon_add.svg';
+  static String get eye => 'assets/icons/icon_eye.svg';
+  static String get eyeOff => 'assets/icons/icon_eye_off.svg';
   static String get emptyRequests => 'assets/icons/icon_orders_backgr.svg';
 }

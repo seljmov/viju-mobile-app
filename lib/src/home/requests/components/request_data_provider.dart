@@ -14,7 +14,10 @@ class RequestDataProvider with ChangeNotifier {
     required this.requestRepository,
   }) {
     _currentStatus = initialStatus;
-    _requestsStream = requestRepository.getRequests(_currentStatus).asStream();
+    _requestsStream = requestRepository
+        .getRequests(_currentStatus)
+        .asStream()
+        .asBroadcastStream();
   }
 
   final IRequestRepository requestRepository;
@@ -26,12 +29,18 @@ class RequestDataProvider with ChangeNotifier {
 
   void loadRequests(int status) async {
     _currentStatus = status;
-    _requestsStream = requestRepository.getRequests(_currentStatus).asStream();
+    _requestsStream = requestRepository
+        .getRequests(_currentStatus)
+        .asStream()
+        .asBroadcastStream();
     notifyListeners();
   }
 
   void refreshRequests() async {
-    _requestsStream = requestRepository.getRequests(_currentStatus).asStream();
+    _requestsStream = requestRepository
+        .getRequests(_currentStatus)
+        .asStream()
+        .asBroadcastStream();
     notifyListeners();
   }
 

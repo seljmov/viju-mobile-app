@@ -6,6 +6,7 @@ import '../../src/home/requests/contacts/contractor/contractor_dto/contractor_dt
 import '../../src/home/requests/contacts/removal_dto/removal_dto.dart';
 import '../../src/home/requests/contacts/waste_dto/waste_dto.dart';
 import '../../src/home/requests/pages/add/request_add_page.dart';
+import '../../src/welcome/login/contracts/user_roles.dart';
 import '../../src/welcome/login/login_page.dart';
 import '../extension/formatted_message.dart';
 import '../helpers/message_helper.dart';
@@ -30,7 +31,12 @@ abstract class AppRoutes {
         case login:
           return MaterialPageRoute(builder: (_) => const LoginPage());
         case home:
-          return MaterialPageRoute(builder: (_) => const RequestPage());
+          // 4 - заказчик, 2 - сотрудник
+          // заказчик не должен создавать заявки
+          final role = settings.arguments == null || settings.arguments is! int
+              ? UserRoles.employee
+              : settings.arguments as int;
+          return MaterialPageRoute(builder: (_) => RequestPage(role: role));
         case addRequest:
           if (settings.arguments == null) {
             MessageHelper.showError(
