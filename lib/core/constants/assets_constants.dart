@@ -8,5 +8,7 @@ abstract class AppIcons {
   static String get add => 'assets/icons/icon_add.svg';
   static String get eye => 'assets/icons/icon_eye.svg';
   static String get eyeOff => 'assets/icons/icon_eye_off.svg';
+  static String get success => 'assets/icons/icon_success.svg';
+  static String get error => 'assets/icons/icon_error.svg';
   static String get emptyRequests => 'assets/icons/icon_orders_backgr.svg';
 }

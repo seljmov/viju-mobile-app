@@ -7,6 +7,7 @@ import '../../../../core/helpers/my_logger.dart';
 import '../../../../core/repositories/tokens/tokens_repository.dart';
 import '../../../../core/repositories/user/user_repository.dart';
 import '../contracts/login_start_dto/login_start_dto.dart';
+import '../contracts/user_roles.dart';
 import '../repositories/login_repository.dart';
 
 part 'login_bloc.freezed.dart';
@@ -56,6 +57,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           : 'Используется production api');
 
       final tokens = await _loginRepository.startLogin(loginDto);
+      if (!UserRoles.allowed.contains(tokens.role)) {
+        emit(const LoginState.errorLogin(message: 'Отсуствуют права доступа'));
+        return;
+      }
+
       await _tokensRepository.saveTokens(
         tokens.accessToken,
         tokens.refreshToken,

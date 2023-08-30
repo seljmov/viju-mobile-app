@@ -30,6 +30,10 @@ abstract class DioHelper {
         baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 32),
         receiveTimeout: const Duration(seconds: 32),
+        followRedirects: false,
+        validateStatus: (status) {
+          return status != null && status <= 500;
+        },
       ),
     );
 

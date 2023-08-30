@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
@@ -12,6 +14,7 @@ import 'core/constants/constants.dart';
 import 'core/constants/routes_constants.dart';
 import 'core/helpers/env_helper.dart';
 import 'core/helpers/message_helper.dart';
+import 'core/helpers/my_logger.dart';
 import 'core/repositories/tokens/tokens_repository_impl.dart';
 import 'core/repositories/user/user_repository.dart';
 import 'src/home/requests/components/request_data_provider.dart';
@@ -25,23 +28,29 @@ import 'theme/dark_theme.dart';
 import 'theme/light_theme.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: '.env');
+      await dotenv.load(fileName: '.env');
 
-  // TODO: Проверить необходимость
-  final userRepository = UserRepositoryImpl();
-  await userRepository.getUserIsUsingDevApi().then((value) {
-    EnvHelper.mainApiUrl =
-        value ? EnvHelper.devApiUrl : EnvHelper.productionApiUrl;
-  });
+      // TODO: Проверить необходимость
+      final userRepository = UserRepositoryImpl();
+      await userRepository.getUserIsUsingDevApi().then((value) {
+        EnvHelper.mainApiUrl =
+            value ? EnvHelper.devApiUrl : EnvHelper.productionApiUrl;
+      });
 
-  await initializeDateFormatting('ru_RU', null);
-  Bloc.observer = BlocGlobalObserver();
-  Bloc.transformer = bloc_concurrency.sequential();
+      await initializeDateFormatting('ru_RU', null);
+      Bloc.observer = BlocGlobalObserver();
+      Bloc.transformer = bloc_concurrency.sequential();
 
-  final savedTheme = await AdaptiveTheme.getThemeMode();
-  runApp(AppConfigurator(savedTheme: savedTheme));
+      final savedTheme = await AdaptiveTheme.getThemeMode();
+
+      runApp(AppConfigurator(savedTheme: savedTheme));
+    },
+    (error, stackTrace) => MyLogger.e('runZonedGuarded -> $error $stackTrace'),
+  );
 }
 
 /// Конфигурация приложения

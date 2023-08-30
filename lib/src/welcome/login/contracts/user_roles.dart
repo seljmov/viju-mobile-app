@@ -5,4 +5,6 @@ abstract class UserRoles {
 
   /// Заказчик (4)
   static const int customer = 4;
+
+  static List<int> get allowed => [employee, customer];
 }

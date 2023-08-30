@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../theme/theme_colors.dart';
 import '../../theme/theme_extention.dart';
+import '../constants/assets_constants.dart';
 
 /// Помощник работы с Snackbar-сообщениями
 class MessageHelper {
@@ -30,9 +31,7 @@ class MessageHelper {
               Padding(
                 padding: const EdgeInsets.only(right: 20),
                 child: SvgPicture.asset(
-                  isSuccess
-                      ? "assets/images/icons/large_success.svg"
-                      : "assets/images/icons/large_error.svg",
+                  isSuccess ? AppIcons.success : AppIcons.error,
                 ),
               ),
               Expanded(
