@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../core/constants/assets_constants.dart';
+import '../../../../../core/helpers/message_helper.dart';
 import '../../../../../core/models/multi_image.dart';
 import '../../../../../core/widgets/button/thesis_button.dart';
 import '../../../../../core/widgets/thesis_drop_down_button.dart';
@@ -17,6 +18,7 @@ import '../../contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../../contacts/contractor/location_dto/location_dto.dart';
 import '../../contacts/removal_dto/removal_dto.dart';
 import '../../contacts/request_create_dto/request_create_dto.dart';
+import '../../contacts/request_statuses.dart';
 import '../../contacts/waste_dto/waste_dto.dart';
 import 'widgets/attach_images_grid.dart';
 
@@ -368,10 +370,20 @@ class RequestAddPage extends StatelessWidget {
                                 .map((el) => el.file)
                                 .toList();
 
-                            await context
-                                .read<RequestDataProvider>()
-                                .createRequest(createDto, images)
-                                .whenComplete(() => Navigator.pop(context));
+                            final provider =
+                                context.read<RequestDataProvider>();
+                            final result =
+                                await provider.createRequest(createDto, images);
+                            MessageHelper.showByStatus(
+                              isSuccess: result,
+                              successMessage: 'Заявка успешно создана',
+                              errorMessage:
+                                  'Во время создания заявки что-то пошло не так. Попробуйте снова.',
+                            );
+                            if (result) {
+                              provider.loadRequests([RequestStatuses.New]);
+                            }
+                            Navigator.pop(context);
                           },
                         );
                       },

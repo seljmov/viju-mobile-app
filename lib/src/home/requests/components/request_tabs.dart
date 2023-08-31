@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -14,23 +15,29 @@ import 'request_data_provider.dart';
 class RequestTabs extends StatelessWidget {
   const RequestTabs({
     super.key,
-    required this.initialStatus,
+    required this.initialStatuses,
   });
 
-  final int initialStatus;
+  final List<int> initialStatuses;
 
   @override
   Widget build(BuildContext context) {
-    final statusesDictinary = RequestStatuses.toDictionary;
-    final statuses = statusesDictinary.keys.toList();
-    final initialIndex = statuses.indexOf(initialStatus);
-    final statusNotifier = ValueNotifier<int>(
-      initialIndex == -1 ? 0 : initialIndex,
+    final defaultStatus = [RequestStatuses.New];
+    final statuses = RequestStatuses.statuses;
+    final relations = RequestStatuses.relatedStatuses;
+
+    final keys = relations.keys.toList();
+    final result = relations.entries.firstWhere(
+      (element) => listEquals(element.value, initialStatuses),
+      orElse: () => relations.entries.first,
     );
+
+    final statusNotifier = ValueNotifier<int>(keys.indexOf(result.key));
 
     return ValueListenableBuilder(
       valueListenable: statusNotifier,
       builder: (context, currentIndex, child) {
+        debugPrint('currentIndex -> $currentIndex');
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -38,22 +45,22 @@ class RequestTabs extends StatelessWidget {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: List.generate(statusesDictinary.length, (index) {
+                children: List.generate(statuses.length, (index) {
                   return Padding(
                     padding: EdgeInsets.only(
                       left: index == 0 ? 22 : 0,
-                      right: index == statusesDictinary.length - 1 ? 22 : 8,
+                      right: index == statuses.length - 1 ? 22 : 8,
                     ),
                     child: GestureDetector(
                       onTap: () {
                         statusNotifier.value = index;
-                        final pickedStatus = statuses[index];
-                        context
-                            .read<RequestDataProvider>()
-                            .loadRequests(pickedStatus);
+                        final pickedStatus = statuses.keys.elementAt(index);
+
+                        context.read<RequestDataProvider>().loadRequests(
+                            relations[pickedStatus] ?? defaultStatus);
                       },
                       child: RequestTabBarItem(
-                        title: statusesDictinary[statuses[index]]!,
+                        title: statuses.values.elementAt(index),
                         isPicked: currentIndex == index,
                       ),
                     ),
@@ -77,11 +84,14 @@ class RequestTabs extends StatelessWidget {
                       child: RefreshIndicator(
                         color: kPrimaryColor,
                         onRefresh: () async {
-                          provider.loadRequests(statuses[currentIndex]);
+                          provider.loadRequests(
+                            relations[statuses.keys.elementAt(currentIndex)]!,
+                          );
                         },
                         child: RequestList(
                           requests: requests,
-                          status: statuses[currentIndex],
+                          status: 0,
+                          //status: statuses[currentIndex],
                         ),
                       ),
                       replacement: Column(
@@ -99,7 +109,7 @@ class RequestTabs extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Нет заявок в статусе "${statusesDictinary.values.elementAt(currentIndex)}"',
+                            'Нет заявок в статусе "${statuses.values.elementAt(currentIndex)}"',
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ],

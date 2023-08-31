@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -45,8 +46,11 @@ Future<void> main() async {
       Bloc.observer = BlocGlobalObserver();
       Bloc.transformer = bloc_concurrency.sequential();
 
-      final savedTheme = await AdaptiveTheme.getThemeMode();
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
 
+      final savedTheme = await AdaptiveTheme.getThemeMode();
       runApp(AppConfigurator(savedTheme: savedTheme));
     },
     (error, stackTrace) => MyLogger.e('runZonedGuarded -> $error $stackTrace'),
@@ -82,7 +86,7 @@ class AppConfigurator extends StatelessWidget {
           ),
           ChangeNotifierProvider<RequestDataProvider>(
             create: (context) => RequestDataProvider(
-              RequestStatuses.New,
+              [RequestStatuses.New],
               requestRepository: RequestRepositoryImpl(),
             ),
           ),

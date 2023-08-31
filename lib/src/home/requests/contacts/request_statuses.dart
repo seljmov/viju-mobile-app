@@ -9,23 +9,17 @@ abstract class RequestStatuses {
 
   static const int count = 6;
 
-  static Map<int, String> get toDictionary => {
-        New: statusName(New),
-        Agreed: statusName(Agreed),
-        InProgress: statusName(InProgress),
-        Executed: statusName(Executed),
-        Completed: statusName(Completed),
-        Canceled: statusName(Canceled),
+  static Map<int, List<int>> get relatedStatuses => {
+        New: [New],
+        InProgress: [Agreed, InProgress],
+        Completed: [Executed, Completed, Canceled],
       };
 
-  static List<String> get names => [
-        statusName(New),
-        statusName(Agreed),
-        statusName(InProgress),
-        statusName(Executed),
-        statusName(Completed),
-        statusName(Canceled),
-      ];
+  static Map<int, String> get statuses => {
+        New: statusName(New),
+        InProgress: statusName(InProgress),
+        Completed: statusName(Completed),
+      };
 
   /// Возвращает название статуса по его коду
   static String statusName(int status) => switch (status) {

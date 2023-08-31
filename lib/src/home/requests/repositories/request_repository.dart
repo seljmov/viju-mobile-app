@@ -8,7 +8,7 @@ import '../contacts/request_dto/request_dto.dart';
 import '../contacts/waste_dto/waste_dto.dart';
 
 abstract class IRequestRepository {
-  Future<List<RequestDto>> getRequests(int status);
+  Future<List<RequestDto>> getRequests(List<int> statuses);
 
   Future<List<ContractorDto>> getContractors();
 
@@ -23,13 +23,11 @@ abstract class IRequestRepository {
 
 class RequestRepositoryImpl implements IRequestRepository {
   @override
-  Future<List<RequestDto>> getRequests(int status) async {
+  Future<List<RequestDto>> getRequests(List<int> statuses) async {
     try {
       final response = await DioHelper.postData(
         url: '/request',
-        data: {
-          'statuses': [status]
-        },
+        data: {'statuses': statuses},
       );
 
       switch (response.statusCode) {

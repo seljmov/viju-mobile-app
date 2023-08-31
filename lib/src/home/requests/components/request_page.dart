@@ -64,7 +64,7 @@ class RequestPage extends StatelessWidget {
         ),
       ),
       child: RequestTabs(
-        initialStatus: provider.currentStatus,
+        initialStatuses: provider.currentStatuses,
       ),
       //child: const RequestScreen(),
     );

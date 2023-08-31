@@ -32,7 +32,7 @@ abstract class DioHelper {
         receiveTimeout: const Duration(seconds: 32),
         followRedirects: false,
         validateStatus: (status) {
-          return status != null && status <= 500;
+          return status != null && status < 400;
         },
       ),
     );
@@ -59,8 +59,6 @@ abstract class DioHelper {
         onError: (DioException error, handler) async {
           if (error.response?.statusCode == 400) {
             try {
-              //navService.pushNamedAndRemoveUntil(AppRoutes.loading);
-
               final tokensRepository = TokensRepositoryImpl();
               await tokensRepository.updateTokensFromServer();
 

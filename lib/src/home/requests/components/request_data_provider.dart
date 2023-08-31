@@ -10,27 +10,27 @@ import '../repositories/request_repository.dart';
 
 class RequestDataProvider with ChangeNotifier {
   RequestDataProvider(
-    int initialStatus, {
+    List<int> initialStatuses, {
     required this.requestRepository,
   }) {
-    _currentStatus = initialStatus;
+    _currentStatuses = initialStatuses;
     _requestsStream = requestRepository
-        .getRequests(_currentStatus)
+        .getRequests(_currentStatuses)
         .asStream()
         .asBroadcastStream();
   }
 
   final IRequestRepository requestRepository;
   late Stream<List<RequestDto>> _requestsStream;
-  late int _currentStatus;
+  late List<int> _currentStatuses;
 
   Stream<List<RequestDto>> get requestsStream => _requestsStream;
-  int get currentStatus => _currentStatus;
+  List<int> get currentStatuses => _currentStatuses;
 
-  void loadRequests(int status) async {
-    _currentStatus = status;
+  void loadRequests(List<int> statuses) async {
+    _currentStatuses = statuses;
     _requestsStream = requestRepository
-        .getRequests(_currentStatus)
+        .getRequests(_currentStatuses)
         .asStream()
         .asBroadcastStream();
     notifyListeners();
@@ -38,7 +38,7 @@ class RequestDataProvider with ChangeNotifier {
 
   void refreshRequests() async {
     _requestsStream = requestRepository
-        .getRequests(_currentStatus)
+        .getRequests(_currentStatuses)
         .asStream()
         .asBroadcastStream();
     notifyListeners();
