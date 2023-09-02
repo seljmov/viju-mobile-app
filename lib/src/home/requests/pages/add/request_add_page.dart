@@ -84,47 +84,62 @@ class RequestAddPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    ThesisDropDownButton<ContractorDto>(
-                      controller: contractorController,
-                      bottomSheepTitle: 'Контрагенты',
-                      items: contractors,
-                      itemBuilder: (item) => Text(
-                        item.name,
-                        style: context.textTheme.titleLarge,
-                      ),
-                      onSelected: (item) {
+                    Builder(builder: (context) {
+                      if (contractors.length == 1) {
                         addressController.text = '';
                         addressesNotifier.value = null;
                         locationController.text = '';
                         locationsNotifier.value = null;
 
-                        contractorController.text = item.name;
-
-                        locationsNotifier.value = item.locations;
-                        if (locationsNotifier.value?.length == 1) {
-                          locationController.text =
-                              locationsNotifier.value![0].name;
-                          addressesNotifier.value =
-                              locationsNotifier.value![0].addresses;
-
-                          if (addressesNotifier.value?.length == 1) {
-                            addressController.text =
-                                addressesNotifier.value![0].address;
-                          }
-                        }
+                        contractorController.text = contractors[0].name;
+                        locationsNotifier.value = contractors[0].locations;
 
                         canCreateRequestNotifier.value = canCreateRequest();
-                      },
-                      decoration: const InputDecoration(
-                        labelText: 'Контрагент',
-                        hintText: 'Выберите контрагента',
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        suffixIcon: Icon(
-                          Icons.keyboard_arrow_down,
-                          color: kGray1Color,
+                        return const SizedBox.shrink();
+                      }
+
+                      return ThesisDropDownButton<ContractorDto>(
+                        controller: contractorController,
+                        bottomSheepTitle: 'Контрагенты',
+                        items: contractors,
+                        itemBuilder: (item) => Text(
+                          item.name,
+                          style: context.textTheme.titleLarge,
                         ),
-                      ),
-                    ),
+                        onSelected: (item) {
+                          addressController.text = '';
+                          addressesNotifier.value = null;
+                          locationController.text = '';
+                          locationsNotifier.value = null;
+
+                          contractorController.text = item.name;
+
+                          locationsNotifier.value = item.locations;
+                          if (locationsNotifier.value?.length == 1) {
+                            locationController.text =
+                                locationsNotifier.value![0].name;
+                            addressesNotifier.value =
+                                locationsNotifier.value![0].addresses;
+
+                            if (addressesNotifier.value?.length == 1) {
+                              addressController.text =
+                                  addressesNotifier.value![0].address;
+                            }
+                          }
+
+                          canCreateRequestNotifier.value = canCreateRequest();
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Контрагент',
+                          hintText: 'Выберите контрагента',
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          suffixIcon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: kGray1Color,
+                          ),
+                        ),
+                      );
+                    }),
                     const SizedBox(height: 10),
                     ValueListenableBuilder(
                       valueListenable: locationsNotifier,
@@ -132,6 +147,16 @@ class RequestAddPage extends StatelessWidget {
                         if (locations == null || locations.isEmpty) {
                           return const SizedBox.shrink();
                         }
+
+                        if (locations.length == 1) {
+                          addressController.text = '';
+                          addressesNotifier.value = null;
+                          locationController.text = locations[0].name;
+                          addressesNotifier.value = locations[0].addresses;
+                          canCreateRequestNotifier.value = canCreateRequest();
+                          return const SizedBox.shrink();
+                        }
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: ThesisDropDownButton<LocationDto>(
@@ -179,6 +204,13 @@ class RequestAddPage extends StatelessWidget {
                         if (addresses == null || addresses.isEmpty) {
                           return const SizedBox.shrink();
                         }
+
+                        if (addresses.length == 1) {
+                          addressController.text = addresses[0].address;
+                          canCreateRequestNotifier.value = canCreateRequest();
+                          return const SizedBox.shrink();
+                        }
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: ThesisDropDownButton<AddressDto>(
