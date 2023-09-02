@@ -28,16 +28,15 @@ abstract class DioHelper {
     final client = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 32),
-        receiveTimeout: const Duration(seconds: 32),
-        followRedirects: false,
-        validateStatus: (status) {
-          return status != null && status < 400;
-        },
+        connectTimeout: const Duration(seconds: 16),
+        receiveTimeout: const Duration(seconds: 16),
       ),
     );
 
     if (useAuthErrorInterceptor) {
+      client.options.followRedirects = false;
+      client.options.validateStatus = (status) => true;
+
       client.interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) async {
           final accessToken = await _tokensRepository.getAccessToken();

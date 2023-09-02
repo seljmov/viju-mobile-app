@@ -58,7 +58,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       final tokens = await _loginRepository.startLogin(loginDto);
       if (!UserRoles.allowed.contains(tokens.role)) {
-        emit(const LoginState.errorLogin(message: 'Отсуствуют права доступа'));
+        emit(const LoginState.errorLogin(
+          message: 'Ошибка в логине/пароле или отсуствуют права доступа',
+        ));
         return;
       }
 

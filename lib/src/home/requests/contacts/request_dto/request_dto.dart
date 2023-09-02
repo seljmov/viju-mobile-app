@@ -9,6 +9,7 @@ class RequestDto with _$RequestDto {
 
   const factory RequestDto({
     required int id,
+    required String status,
     required String location,
     required String locationAddress,
     required String removalType,

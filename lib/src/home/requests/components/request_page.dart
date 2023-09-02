@@ -9,6 +9,7 @@ import '../../../../core/widgets/thesis_progress_bar.dart';
 import '../../../../core/widgets/thesis_sliver_screen.dart';
 import '../../../welcome/auth/auth_scope.dart';
 import '../../../welcome/login/contracts/user_roles.dart';
+import '../contacts/request_statuses.dart';
 import 'request_data_provider.dart';
 import 'request_tabs.dart';
 
@@ -25,6 +26,7 @@ class RequestPage extends StatelessWidget {
     debugPrint('role -> $role');
     final loadSourcesNotifier = ValueNotifier<bool>(false);
     final provider = context.read<RequestDataProvider>();
+    provider.loadRequests([RequestStatuses.New]);
     return ThesisSliverScreen(
       title: 'Заявки',
       leading: const SizedBox.shrink(),
@@ -63,10 +65,11 @@ class RequestPage extends StatelessWidget {
           ),
         ),
       ),
-      child: RequestTabs(
-        initialStatuses: provider.currentStatuses,
+      child: Consumer<RequestDataProvider>(
+        builder: (context, provider, child) => RequestTabs(
+          initialStatuses: provider.currentStatuses,
+        ),
       ),
-      //child: const RequestScreen(),
     );
   }
 }

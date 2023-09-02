@@ -13,6 +13,7 @@ import '../components/request_data_provider.dart';
 import '../contacts/request_cancel_dto/request_cancel_dto.dart';
 import '../contacts/request_dto/request_dto.dart';
 import '../contacts/request_statuses.dart';
+import 'request_state_card.dart';
 
 class RequestCard extends StatelessWidget {
   const RequestCard({
@@ -57,6 +58,8 @@ class RequestCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
+            RequestStateCard(statusName: request.status),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

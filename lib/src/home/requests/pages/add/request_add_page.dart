@@ -264,6 +264,7 @@ class RequestAddPage extends StatelessWidget {
                             key: countMFormKey,
                             controller: countMController,
                             style: context.textTheme.titleLarge,
+                            keyboardType: TextInputType.number,
                             onChanged: (value) {
                               countMFormKey.currentState?.validate();
                               canCreateRequestNotifier.value =
@@ -284,6 +285,7 @@ class RequestAddPage extends StatelessWidget {
                             key: countTFormKey,
                             controller: countTController,
                             style: context.textTheme.titleLarge,
+                            keyboardType: TextInputType.number,
                             onChanged: (value) {
                               countTFormKey.currentState?.validate();
                               canCreateRequestNotifier.value =
@@ -399,7 +401,9 @@ class RequestAddPage extends StatelessWidget {
   }
 
   String? _doubleValidate(String? value) {
-    if (double.tryParse(value ?? '') == null) {
+    if (value == null || value == '') return null;
+
+    if (double.tryParse(value) == null) {
       return 'Введите число';
     }
 
