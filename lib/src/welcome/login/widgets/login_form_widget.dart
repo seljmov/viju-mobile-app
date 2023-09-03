@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -13,9 +14,13 @@ class LoginFormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginController = TextEditingController(text: '_zclient');
+    final loginController = TextEditingController(
+      text: kDebugMode ? '_zclient' : '',
+    );
     final loginFormKey = GlobalKey<FormFieldState>();
-    final passwordController = TextEditingController(text: 'client');
+    final passwordController = TextEditingController(
+      text: kDebugMode ? 'client' : '',
+    );
     final passwordFormKey = GlobalKey<FormFieldState>();
     final passwordObscureNotifier = ValueNotifier<bool>(true);
     final emptyNotifier = ValueNotifier<bool>(
