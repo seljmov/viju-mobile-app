@@ -37,7 +37,7 @@ class RequestRepositoryImpl implements IRequestRepository {
               .toList();
         default:
           MyLogger.e(
-            'Что-то пошло не так... Попробуйте снова. code = ${response.statusCode}',
+            'RequestRepositoryImpl -> getRequests \nЧто-то пошло не так... Попробуйте снова. code = ${response.statusCode}',
           );
           throw Exception('Что-то пошло не так... Попробуйте снова.');
       }

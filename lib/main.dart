@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'core/bloc/bloc_global_observer.dart';
 import 'core/constants/constants.dart';
 import 'core/constants/routes_constants.dart';
+import 'core/helpers/dio_helper.dart';
 import 'core/helpers/env_helper.dart';
 import 'core/helpers/message_helper.dart';
 import 'core/helpers/my_logger.dart';
@@ -35,7 +36,6 @@ Future<void> main() async {
 
       await dotenv.load(fileName: '.env');
 
-      // TODO: Проверить необходимость
       final userRepository = UserRepositoryImpl();
       await userRepository.getUserIsUsingDevApi().then((value) {
         EnvHelper.mainApiUrl =
@@ -53,7 +53,19 @@ Future<void> main() async {
       final savedTheme = await AdaptiveTheme.getThemeMode();
       runApp(AppConfigurator(savedTheme: savedTheme));
     },
-    (error, stackTrace) => MyLogger.e('runZonedGuarded -> $error $stackTrace'),
+    (error, stackTrace) async {
+      MyLogger.d('url -> ${EnvHelper.mainApiUrl}');
+      final response = await DioHelper.postData(
+        url: '/error',
+        data: {
+          "text": error,
+          "stackTrace": stackTrace,
+        },
+      );
+      MyLogger.d('code -> ${response.statusCode}');
+      MyLogger.e('runZonedGuarded222 -> $error $stackTrace');
+      //).whenComplete(() => debugPrint('Информация об ошибке была отправлена'));
+    },
   );
 }
 
@@ -138,10 +150,15 @@ class _AppRunnerState extends State<AppRunner> {
           unauthenticated: (_) => navService.pushNamedAndRemoveUntil(
             AppRoutes.login,
           ),
-          authenticated: (state) => navService.pushNamedAndRemoveUntil(
-            AppRoutes.home,
-            args: state.role,
-          ),
+          authenticated: (state) {
+            context
+                .read<RequestDataProvider>()
+                .loadRequests([RequestStatuses.New]);
+            return navService.pushNamedAndRemoveUntil(
+              AppRoutes.home,
+              args: state.role,
+            );
+          },
           orElse: () => const SplashScreen(),
         ),
         child: const SplashScreen(),

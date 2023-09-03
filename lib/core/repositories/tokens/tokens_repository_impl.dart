@@ -47,6 +47,10 @@ class TokensRepositoryImpl implements TokensRepository {
         'refreshToken': await getRefreshToken(),
       };
 
+      final client = DioHelper.getBaseDioClient;
+      client.options.followRedirects = false;
+      client.options.validateStatus = (status) => true;
+
       final response = await DioHelper.postData(
         url: '/auth/refresh',
         data: data,

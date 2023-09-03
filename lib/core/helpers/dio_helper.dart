@@ -19,24 +19,23 @@ abstract class DioHelper {
     dynamic data = const {},
     bool useAuthErrorInterceptor = true,
   }) async {
-    final dio = getDioClient(useAuthErrorInterceptor);
+    final dio = _getDioClient(useAuthErrorInterceptor);
     return await dio.post(url, data: data);
   }
 
+  static Dio get getBaseDioClient => Dio(
+        BaseOptions(
+          baseUrl: baseUrl,
+          connectTimeout: const Duration(seconds: 16),
+          receiveTimeout: const Duration(seconds: 16),
+        ),
+      );
+
   /// Получить клиент с найстройками
-  static Dio getDioClient(bool useAuthErrorInterceptor) {
-    final client = Dio(
-      BaseOptions(
-        baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 16),
-        receiveTimeout: const Duration(seconds: 16),
-      ),
-    );
+  static Dio _getDioClient(bool useAuthErrorInterceptor) {
+    final client = getBaseDioClient;
 
     if (useAuthErrorInterceptor) {
-      client.options.followRedirects = false;
-      client.options.validateStatus = (status) => true;
-
       client.interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) async {
           final accessToken = await _tokensRepository.getAccessToken();
