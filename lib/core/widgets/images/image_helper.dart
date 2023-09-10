@@ -15,15 +15,16 @@ abstract class ImageHelper {
   static Future<String> register(File image, String path) async {
     try {
       final compressedFile = await _compressImage(image);
+      final formData = FormData.fromMap({
+        "image": MultipartFile.fromBytes(
+          compressedFile,
+          filename: image.path.split("/").last,
+          contentType: http.MediaType("image", "jpeg"),
+        ),
+      });
       final response = await DioHelper.postData(
         url: path,
-        data: FormData.fromMap({
-          "image": MultipartFile.fromBytes(
-            compressedFile,
-            filename: image.path.split("/").last,
-            contentType: http.MediaType("image", "jpeg"),
-          ),
-        }),
+        data: formData,
       );
 
       switch (response.statusCode) {

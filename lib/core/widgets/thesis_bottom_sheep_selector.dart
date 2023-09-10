@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../theme/theme_colors.dart';
 import '../../theme/theme_constants.dart';
 import '../../theme/theme_extention.dart';
+import '../constants/constants.dart';
 import 'button/thesis_button.dart';
 import 'button/thesis_outlined_button.dart';
 import 'thesis_bottom_sheep.dart';
@@ -21,7 +22,8 @@ class ThesisBottomSheepSelector {
     await ThesisBottomSheep.showBarModalAsync(
       context,
       expand: false,
-      builder: (context) => Padding(
+      builder: (context) => SingleChildScrollView(
+        physics: kDefaultPhysics,
         padding: kBottomSheepDefaultPaddingHorizontal,
         child: Wrap(
           children: [

@@ -58,15 +58,15 @@ class RequestCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            RequestStateCard(statusName: request.status),
-            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 10),
+                    RequestStateCard(statusName: request.status),
+                    const SizedBox(height: 16),
                     RichText(
                       text: TextSpan(
                         children: [
@@ -134,7 +134,8 @@ class RequestCard extends StatelessWidget {
                   ],
                 ),
                 Visibility(
-                  visible: status == RequestStatuses.New,
+                  visible: request.status ==
+                      RequestStatuses.statusName(RequestStatuses.New),
                   child: IconButton(
                     onPressed: () async {
                       final reasonController = TextEditingController();

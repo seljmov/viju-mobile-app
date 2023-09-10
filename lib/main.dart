@@ -54,17 +54,21 @@ Future<void> main() async {
       runApp(AppConfigurator(savedTheme: savedTheme));
     },
     (error, stackTrace) async {
-      MyLogger.d('url -> ${EnvHelper.mainApiUrl}');
-      final response = await DioHelper.postData(
-        url: '/error',
-        data: {
-          "text": error,
-          "stackTrace": stackTrace,
-        },
-      );
-      MyLogger.d('code -> ${response.statusCode}');
-      MyLogger.e('runZonedGuarded222 -> $error $stackTrace');
-      //).whenComplete(() => debugPrint('Информация об ошибке была отправлена'));
+      final tokensRepository = TokensRepositoryImpl();
+      final token = await tokensRepository.getAccessToken();
+      if (token != null && token.isNotEmpty) {
+        final response = await DioHelper.postData(
+          url: '/error',
+          data: {
+            "text": error,
+            "stackTrace": stackTrace,
+          },
+        ).whenComplete(
+          () => debugPrint('Информация об ошибке была отправлена'),
+        );
+
+        MyLogger.d('code -> ${response.statusCode}');
+      }
     },
   );
 }

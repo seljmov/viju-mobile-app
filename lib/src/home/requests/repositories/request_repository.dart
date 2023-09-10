@@ -103,6 +103,7 @@ class RequestRepositoryImpl implements IRequestRepository {
         case 200:
           return (response.data as List)
               .map((e) => WasteDto.fromJson(e))
+              .where((e) => !e.name.toUpperCase().contains('ТБО'))
               .toList();
         default:
           MyLogger.e(
