@@ -51,10 +51,10 @@ class TokensRepositoryImpl implements TokensRepository {
       client.options.followRedirects = false;
       client.options.validateStatus = (status) => true;
 
-      final response = await DioHelper.postData(
-        url: '/auth/refresh',
+      final path = '${DioHelper.baseUrl}/auth/refresh';
+      final response = await client.post(
+        path,
         data: data,
-        useAuthErrorInterceptor: false,
       );
 
       switch (response.statusCode) {

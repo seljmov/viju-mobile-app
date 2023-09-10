@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 import '../constants/routes_constants.dart';
@@ -27,8 +26,8 @@ abstract class DioHelper {
   static Dio get getBaseDioClient => Dio(
         BaseOptions(
           baseUrl: baseUrl,
-          connectTimeout: const Duration(seconds: 16),
-          receiveTimeout: const Duration(seconds: 16),
+          connectTimeout: const Duration(seconds: 32),
+          receiveTimeout: const Duration(seconds: 32),
         ),
       );
 
@@ -40,10 +39,9 @@ abstract class DioHelper {
       client.interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) async {
           final accessToken = await _tokensRepository.getAccessToken();
-          debugPrint('accessToken -> $accessToken');
 
           final headers = Map<String, dynamic>.from(options.headers);
-          headers['accept'] = 'application/json';
+          headers['Accept'] = 'application/json';
           headers['Content-Type'] = 'application/json';
 
           if (accessToken != null) {
@@ -53,7 +51,7 @@ abstract class DioHelper {
               options.data = body;
             }
             headers['Authorization'] = 'Bearer $accessToken';
-            headers['AccessToken'] = accessToken;
+            headers['accessToken'] = accessToken;
           }
 
           options.headers = headers;
@@ -65,31 +63,32 @@ abstract class DioHelper {
               final tokensRepository = TokensRepositoryImpl();
               await tokensRepository.updateTokensFromServer();
 
-              final options = Options(
-                method: error.requestOptions.method,
-                headers: error.requestOptions.headers,
-                responseType: error.requestOptions.responseType,
-              );
-
               final accessToken = await tokensRepository.getAccessToken();
               final data = error.requestOptions.data;
-              if (data is Map<String, dynamic> &&
-                  data.containsKey('accessToken')) {
+              if (data is Map && data.containsKey('accessToken')) {
                 data['accessToken'] = accessToken;
               }
 
               final headers = error.requestOptions.headers;
               if (headers.containsKey('Authorization')) {
                 headers['Authorization'] = 'Bearer $accessToken';
-                options.headers = headers;
+                headers['accessToken'] = accessToken;
               }
 
+              final options = Options(
+                method: error.requestOptions.method,
+                headers: headers,
+                responseType: error.requestOptions.responseType,
+              );
+
               final client = Dio();
+              final path =
+                  '${error.requestOptions.baseUrl}${error.requestOptions.path}';
               final response = await client.request<dynamic>(
-                '${error.requestOptions.baseUrl}${error.requestOptions.path}',
-                data: error.requestOptions.data,
-                queryParameters: error.requestOptions.queryParameters,
+                path,
+                data: data,
                 options: options,
+                queryParameters: error.requestOptions.queryParameters,
               );
 
               MyLogger.i('Refresh-токен успешно обновлен.');

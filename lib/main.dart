@@ -54,20 +54,22 @@ Future<void> main() async {
       runApp(AppConfigurator(savedTheme: savedTheme));
     },
     (error, stackTrace) async {
+      MyLogger.e('Error: $error');
+      MyLogger.e('StackTrace: $stackTrace');
       final tokensRepository = TokensRepositoryImpl();
-      final token = await tokensRepository.getAccessToken();
-      if (token != null && token.isNotEmpty) {
-        final response = await DioHelper.postData(
+      final accessToken = await tokensRepository.getAccessToken();
+      if (accessToken != null && accessToken.isNotEmpty) {
+        final data = {
+          'accessToken': accessToken,
+          'text': 'runZonedGuarded -> $error',
+          'stackTrace': stackTrace.toString(),
+        };
+        await DioHelper.postData(
           url: '/error',
-          data: {
-            "text": error,
-            "stackTrace": stackTrace,
-          },
+          data: data,
         ).whenComplete(
-          () => debugPrint('Информация об ошибке была отправлена'),
+          () => MyLogger.i('Информация об ошибке была отправлена'),
         );
-
-        MyLogger.d('code -> ${response.statusCode}');
       }
     },
   );

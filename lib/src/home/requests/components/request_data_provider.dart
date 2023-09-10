@@ -57,11 +57,7 @@ class RequestDataProvider with ChangeNotifier {
       if (result == null) return false;
 
       if (images.isNotEmpty) {
-        //final path = 'requests/$result/upload-photo';
         final path = '/upload-request-photo/$result';
-        // for (final image in images) {
-        //   if (image != null) await ImageHelper.register(image, path);
-        // }
         final futures = images.map((image) {
           if (image == null) return Future.value();
           return ImageHelper.register(image, path);
