@@ -53,7 +53,13 @@ class RequestCard extends StatelessWidget {
                   style: context.textTheme.headlineSmall,
                 ),
                 Text(
-                  kDateTimeFormatter.format(request.createdTimestamp),
+                  kDateTimeFormatter.format(DateTime.utc(
+                    request.createdTimestamp.year,
+                    request.createdTimestamp.month,
+                    request.createdTimestamp.day,
+                    request.createdTimestamp.hour,
+                    request.createdTimestamp.minute,
+                  ).toLocal()),
                   style: context.textTheme.titleSmall,
                 ),
               ],

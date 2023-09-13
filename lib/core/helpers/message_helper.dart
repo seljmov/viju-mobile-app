@@ -120,7 +120,7 @@ class MessageHelper {
                     child: GestureDetector(
                       child: Text(
                         "Ок, понятно".toUpperCase(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           color: kPrimaryLightColor,
                         ),

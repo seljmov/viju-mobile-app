@@ -112,6 +112,23 @@ class RequestTabs extends StatelessWidget {
                             'Нет заявок в статусе "${statuses.values.elementAt(currentIndex)}"',
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
+                          const SizedBox(height: 12),
+                          TextButton(
+                            style: ButtonStyle(
+                              overlayColor: MaterialStateProperty.all(
+                                kPrimaryLighterColor.withOpacity(0.05),
+                              ),
+                            ),
+                            onPressed: () => provider.loadRequests(
+                              relations[statuses.keys.elementAt(currentIndex)]!,
+                            ),
+                            child: Text(
+                              'Обновить',
+                              style: context.textTheme.labelLarge!.copyWith(
+                                color: kPrimaryColor,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     );

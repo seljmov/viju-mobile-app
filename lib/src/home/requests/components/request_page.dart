@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/assets_constants.dart';
 import '../../../../core/constants/routes_constants.dart';
 import '../../../../core/widgets/thesis_progress_bar.dart';
-import '../../../../core/widgets/thesis_sliver_screen.dart';
+import '../../../../theme/theme_constants.dart';
+import '../../../../theme/theme_extention.dart';
 import '../../../welcome/auth/auth_scope.dart';
 import '../../../welcome/login/contracts/user_roles.dart';
 import 'request_data_provider.dart';
@@ -24,17 +25,16 @@ class RequestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint('role -> $role');
     final loadSourcesNotifier = ValueNotifier<bool>(false);
-    return ThesisSliverScreen(
-      title: 'Заявки',
-      leading: const SizedBox.shrink(),
-      actions: [
-        IconButton(
-          onPressed: () => AuthScope.loggedOut(context),
-          icon: SvgPicture.asset(AppIcons.logout),
-        ),
-        const SizedBox(width: 8),
-      ],
-      bodyPadding: EdgeInsets.zero,
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () => AuthScope.loggedOut(context),
+            icon: SvgPicture.asset(AppIcons.logout),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       floatingActionButton: Visibility(
         visible: role == UserRoles.employee,
         child: FloatingActionButton(
@@ -63,9 +63,23 @@ class RequestPage extends StatelessWidget {
           ),
         ),
       ),
-      child: Consumer<RequestDataProvider>(
-        builder: (context, provider, child) => RequestTabs(
-          initialStatuses: provider.currentStatuses,
+      body: Consumer<RequestDataProvider>(
+        builder: (context, provider, child) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: kThemeDefaultPaddingHorizontal,
+              child: Text(
+                'Заявки',
+                style: context.textTheme.displaySmall,
+              ),
+            ),
+            const SizedBox(height: 20),
+            RequestTabs(
+              initialStatuses: provider.currentStatuses,
+            ),
+          ],
         ),
       ),
     );

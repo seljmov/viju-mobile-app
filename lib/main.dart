@@ -30,6 +30,8 @@ import 'theme/dark_theme.dart';
 import 'theme/light_theme.dart';
 
 Future<void> main() async {
+  await initializeDateFormatting('ru_RU');
+
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +44,6 @@ Future<void> main() async {
             value ? EnvHelper.devApiUrl : EnvHelper.productionApiUrl;
       });
 
-      await initializeDateFormatting('ru_RU', null);
       Bloc.observer = BlocGlobalObserver();
       Bloc.transformer = bloc_concurrency.sequential();
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
-import '../../../../core/constants/constants.dart';
 import '../../../../theme/theme_colors.dart';
 import '../../../../theme/theme_constants.dart';
 import '../contacts/request_dto/request_dto.dart';
@@ -20,11 +19,12 @@ class RequestList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.75,
+      height: MediaQuery.of(context).size.height * 0.725,
       child: AnimationLimiter(
         child: ListView.builder(
-          shrinkWrap: true,
-          physics: kDefaultPhysics,
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           itemCount: requests.length,
           itemBuilder: (context, index) {
             return AnimationConfiguration.staggeredList(
