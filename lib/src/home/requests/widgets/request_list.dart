@@ -10,10 +10,12 @@ class RequestList extends StatelessWidget {
   const RequestList({
     super.key,
     required this.requests,
+    required this.role,
     required this.status,
   });
 
   final List<RequestDto> requests;
+  final int role;
   final int status;
 
   @override
@@ -36,7 +38,7 @@ class RequestList extends StatelessWidget {
                     children: [
                       RequestCard(
                         request: requests[index],
-                        status: status,
+                        role: role,
                       ),
                       Visibility(
                         visible: index != requests.length - 1,

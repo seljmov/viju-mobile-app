@@ -4,8 +4,9 @@ import '../../main.dart';
 import '../../src/home/requests/components/request_page.dart';
 import '../../src/home/requests/contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../../src/home/requests/contacts/removal_dto/removal_dto.dart';
+import '../../src/home/requests/contacts/request_detailed_dto/request_detailed_dto.dart';
 import '../../src/home/requests/contacts/waste_dto/waste_dto.dart';
-import '../../src/home/requests/pages/add/request_add_page.dart';
+import '../../src/home/requests/pages/put/request_put_page.dart';
 import '../../src/welcome/login/contracts/user_roles.dart';
 import '../../src/welcome/login/login_page.dart';
 import '../extension/formatted_message.dart';
@@ -19,6 +20,8 @@ abstract class AppRoutes {
   static const String login = '/login';
   static const String home = '/requests';
   static const String addRequest = '/requests/add';
+  static const String editRequest = '/requests/edit';
+  static const String detailsRequest = '/requests/details';
 
   /// Сгенерировать роут
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -48,13 +51,43 @@ abstract class AppRoutes {
           final contractors = arguments['contractors'] as List<ContractorDto>;
           final wastes = arguments['wastes'] as List<WasteDto>;
           final removals = arguments['removals'] as List<RemovalDto>;
+
           return MaterialPageRoute(
-            builder: (_) => RequestAddPage(
+            builder: (_) => RequestPutPage(
               contractors: contractors,
               wastes: wastes,
               removals: removals,
             ),
           );
+        case editRequest:
+          if (settings.arguments == null) {
+            MessageHelper.showError(
+              'Произошла ошибка при попытке открыть страницу добавления заявки',
+            );
+            return null;
+          }
+          final arguments = settings.arguments as Map<String, dynamic>;
+          final contractors = arguments['contractors'] as List<ContractorDto>;
+          final wastes = arguments['wastes'] as List<WasteDto>;
+          final removals = arguments['removals'] as List<RemovalDto>;
+          final request = arguments['request'] as RequestDetailedDto?;
+          return MaterialPageRoute(
+            builder: (_) => RequestPutPage(
+              contractors: contractors,
+              wastes: wastes,
+              removals: removals,
+              request: request,
+            ),
+          );
+        case detailsRequest:
+          if (settings.arguments == null) {
+            MessageHelper.showError(
+              'Произошла ошибка при попытке открыть страницу добавления заявки',
+            );
+            return null;
+          }
+          //final arguments = settings.arguments as RequestDetailedDto?;
+          return null;
         default:
           return null;
       }

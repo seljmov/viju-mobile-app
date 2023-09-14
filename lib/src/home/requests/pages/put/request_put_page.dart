@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:collection/collection.dart';
 
 import '../../../../../core/constants/assets_constants.dart';
 import '../../../../../core/helpers/message_helper.dart';
@@ -18,45 +19,84 @@ import '../../contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../../contacts/contractor/location_dto/location_dto.dart';
 import '../../contacts/removal_dto/removal_dto.dart';
 import '../../contacts/request_create_dto/request_create_dto.dart';
+import '../../contacts/request_detailed_dto/request_detailed_dto.dart';
+import '../../contacts/request_edit_dto/request_edit_dto.dart';
 import '../../contacts/request_statuses.dart';
 import '../../contacts/waste_dto/waste_dto.dart';
 import 'widgets/attach_images_grid.dart';
 
-class RequestAddPage extends StatelessWidget {
-  const RequestAddPage({
+class RequestPutPage extends StatelessWidget {
+  const RequestPutPage({
     super.key,
     required this.contractors,
     required this.wastes,
     required this.removals,
+    this.request,
   });
 
   final List<ContractorDto> contractors;
   final List<WasteDto> wastes;
   final List<RemovalDto> removals;
+  final RequestDetailedDto? request;
 
   @override
   Widget build(BuildContext context) {
-    final contractorController = TextEditingController();
-    final locationController = TextEditingController();
-    final addressController = TextEditingController();
+    final contractorController = TextEditingController(
+      text: request?.contractor,
+    );
+    final locationController = TextEditingController(
+      text: request?.location,
+    );
+    final addressController = TextEditingController(
+      text: request?.locationAddress,
+    );
+
+    var existedContractor = contractors.firstWhereOrNull(
+      (element) => element.name == contractorController.text,
+    );
+
+    debugPrint('existedContractor: $existedContractor');
+
     final locationsNotifier = ValueNotifier<List<LocationDto>?>(
-      contractors.length == 1 ? contractors[0].locations : null,
+      existedContractor != null
+          ? existedContractor.locations
+          : contractors.length == 1
+              ? contractors[0].locations
+              : null,
     );
+
+    var existedLocation = locationsNotifier.value?.firstWhereOrNull(
+      (element) => element.name == locationController.text,
+    );
+
     final addressesNotifier = ValueNotifier<List<AddressDto>?>(
-      locationsNotifier.value != null && locationsNotifier.value?.length == 1
-          ? locationsNotifier.value![0].addresses
-          : null,
+      existedLocation != null
+          ? existedLocation.addresses
+          : locationsNotifier.value != null &&
+                  locationsNotifier.value?.length == 1
+              ? locationsNotifier.value![0].addresses
+              : null,
     );
-    final wasteController = TextEditingController();
-    final removalController = TextEditingController();
-    final countMController = TextEditingController();
-    final countTController = TextEditingController();
-    final noteController = TextEditingController();
+
+    var existedAddress = addressesNotifier.value?.firstWhereOrNull(
+      (element) => element.address == addressController.text,
+    );
+
+    final wasteController = TextEditingController(text: request?.wasteType);
+    final removalController = TextEditingController(
+      text: request?.removalType,
+    );
+    final countMController = TextEditingController(
+      text: request?.volumeInCubicMeters.toString(),
+    );
+    final countTController = TextEditingController(
+      text: request?.volumeInTons.toString(),
+    );
+    final noteController = TextEditingController(text: request?.note);
     final countMFormKey = GlobalKey<FormFieldState>();
     final countTFormKey = GlobalKey<FormFieldState>();
     final imageFilesNotifier = ValueNotifier<List<MultiImage>>([]);
 
-    final canCreateRequestNotifier = ValueNotifier<bool>(false);
     bool canCreateRequest() {
       return contractorController.text.isNotEmpty &&
           locationController.text.isNotEmpty &&
@@ -64,6 +104,8 @@ class RequestAddPage extends StatelessWidget {
           wasteController.text.isNotEmpty &&
           removalController.text.isNotEmpty;
     }
+
+    final canCreateRequestNotifier = ValueNotifier<bool>(canCreateRequest());
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -74,7 +116,9 @@ class RequestAddPage extends StatelessWidget {
           children: [
             Flexible(
               child: ThesisSliverScreen(
-                title: 'Создание заявки',
+                title: request == null
+                    ? 'Создание заявки'
+                    : 'Редактирование заявки',
                 leading: IconButton(
                   icon: SvgPicture.asset(AppIcons.close),
                   onPressed: () => Navigator.pop(context),
@@ -102,11 +146,15 @@ class RequestAddPage extends StatelessWidget {
                         controller: contractorController,
                         bottomSheepTitle: 'Контрагенты',
                         items: contractors,
+                        initialItem: existedContractor,
                         itemBuilder: (item) => Text(
                           item.name,
                           style: context.textTheme.titleLarge,
                         ),
                         onSelected: (item) {
+                          existedContractor = item;
+                          existedLocation = null;
+                          existedAddress = null;
                           addressController.text = '';
                           addressesNotifier.value = null;
                           locationController.text = '';
@@ -161,8 +209,8 @@ class RequestAddPage extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 10),
                           child: ThesisDropDownButton<LocationDto>(
                             controller: locationController,
-                            initialItem:
-                                locations.length == 1 ? locations[0] : null,
+                            initialItem: existedLocation ??
+                                (locations.length == 1 ? locations[0] : null),
                             bottomSheepTitle: 'Локации',
                             items: locations,
                             itemBuilder: (item) => Text(
@@ -170,6 +218,8 @@ class RequestAddPage extends StatelessWidget {
                               style: context.textTheme.titleLarge,
                             ),
                             onSelected: (item) {
+                              existedLocation = item;
+                              existedAddress = null;
                               addressController.text = '';
                               addressesNotifier.value = null;
 
@@ -215,8 +265,8 @@ class RequestAddPage extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 10),
                           child: ThesisDropDownButton<AddressDto>(
                             controller: addressController,
-                            initialItem:
-                                addresses.length == 1 ? addresses[0] : null,
+                            initialItem: existedAddress ??
+                                (addresses.length == 1 ? addresses[0] : null),
                             bottomSheepTitle: 'Адреса',
                             items: addresses,
                             itemBuilder: (item) => Text(
@@ -224,6 +274,7 @@ class RequestAddPage extends StatelessWidget {
                               style: context.textTheme.titleLarge,
                             ),
                             onSelected: (item) {
+                              existedAddress = item;
                               addressController.text = item.address;
                               canCreateRequestNotifier.value =
                                   canCreateRequest();
@@ -345,18 +396,26 @@ class RequestAddPage extends StatelessWidget {
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    Text(
-                      'Фото',
-                      textAlign: TextAlign.left,
-                      style: context.textTheme.headlineSmall!.copyWith(
-                        fontWeight: FontWeight.bold,
+                    Visibility(
+                      visible: request == null,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(height: 30),
+                          Text(
+                            'Фото',
+                            textAlign: TextAlign.left,
+                            style: context.textTheme.headlineSmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          // Вывод сетки изображений
+                          AttachImagesGrid(
+                            imagesNotifier: imageFilesNotifier,
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    // Вывод сетки изображений
-                    AttachImagesGrid(
-                      imagesNotifier: imageFilesNotifier,
                     ),
                     const SizedBox(height: 32),
                   ],
@@ -376,7 +435,56 @@ class RequestAddPage extends StatelessWidget {
                           text: 'Сохранить',
                           isDisabled: !canCreate,
                           onPressed: () async {
-                            final createDto = RequestCreateDto(
+                            if (request == null) {
+                              final createDto = RequestCreateDto(
+                                contractorId: contractors
+                                    .firstWhere((element) =>
+                                        element.name ==
+                                        contractorController.text)
+                                    .id,
+                                locationAddressId: addressesNotifier.value!
+                                    .firstWhere((element) =>
+                                        element.address ==
+                                        addressController.text)
+                                    .id,
+                                wasteTypeId: wastes
+                                    .firstWhere((element) =>
+                                        element.name == wasteController.text)
+                                    .id,
+                                removalTypeId: removals
+                                    .firstWhere((element) =>
+                                        element.name == removalController.text)
+                                    .id,
+                                approximateVolumeInCubicMeters:
+                                    double.tryParse(countMController.text),
+                                approximateVolumeInTons:
+                                    double.tryParse(countTController.text),
+                                note: noteController.text,
+                              );
+
+                              final images = imageFilesNotifier.value
+                                  .map((el) => el.file)
+                                  .toList();
+
+                              final provider =
+                                  context.read<RequestDataProvider>();
+                              final result = await provider.createRequest(
+                                  createDto, images);
+                              MessageHelper.showByStatus(
+                                isSuccess: result,
+                                successMessage: 'Заявка успешно создана',
+                                errorMessage:
+                                    'Во время создания заявки что-то пошло не так. Попробуйте снова.',
+                              );
+                              if (result) {
+                                provider.loadRequests([RequestStatuses.New]);
+                              }
+                              Navigator.pop(context);
+                              return;
+                            }
+
+                            final editDto = RequestEditDto(
+                              id: request!.id,
                               contractorId: contractors
                                   .firstWhere((element) =>
                                       element.name == contractorController.text)
@@ -400,19 +508,14 @@ class RequestAddPage extends StatelessWidget {
                               note: noteController.text,
                             );
 
-                            final images = imageFilesNotifier.value
-                                .map((el) => el.file)
-                                .toList();
-
                             final provider =
                                 context.read<RequestDataProvider>();
-                            final result =
-                                await provider.createRequest(createDto, images);
+                            final result = await provider.editRequest(editDto);
                             MessageHelper.showByStatus(
                               isSuccess: result,
-                              successMessage: 'Заявка успешно создана',
+                              successMessage: 'Заявка успешно отредактирована',
                               errorMessage:
-                                  'Во время создания заявки что-то пошло не так. Попробуйте снова.',
+                                  'Во время редактирования заявки что-то пошло не так. Попробуйте снова.',
                             );
                             if (result) {
                               provider.loadRequests([RequestStatuses.New]);

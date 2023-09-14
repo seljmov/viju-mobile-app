@@ -6,7 +6,7 @@ part 'request_document_dto.g.dart';
 @freezed
 class RequestDocumentDto with _$RequestDocumentDto {
   const factory RequestDocumentDto({
-    required String id,
+    required int id,
     required String documentType,
     required String fileName,
     required String url,

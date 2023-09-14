@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 import '../constants/routes_constants.dart';
@@ -39,6 +40,7 @@ abstract class DioHelper {
       client.interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) async {
           final accessToken = await _tokensRepository.getAccessToken();
+          debugPrint('accessToken -> $accessToken');
 
           final headers = Map<String, dynamic>.from(options.headers);
           headers['Accept'] = 'application/json';

@@ -6,9 +6,9 @@ part 'request_status_dto.g.dart';
 @freezed
 class RequestStatusDto with _$RequestStatusDto {
   const factory RequestStatusDto({
-    required String id,
+    required int id,
     required String status,
-    required String note,
+    required String? note,
     required DateTime createdTimestamp,
     required String createdUser,
   }) = _RequestStatusDto;

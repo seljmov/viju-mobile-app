@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/widgets/images/image_helper.dart';
 import '../contacts/request_cancel_dto/request_cancel_dto.dart';
 import '../contacts/request_create_dto/request_create_dto.dart';
+import '../contacts/request_detailed_dto/request_detailed_dto.dart';
 import '../contacts/request_dto/request_dto.dart';
+import '../contacts/request_edit_dto/request_edit_dto.dart';
 import '../repositories/request_repository.dart';
 
 class RequestDataProvider with ChangeNotifier {
@@ -48,6 +50,10 @@ class RequestDataProvider with ChangeNotifier {
     await requestRepository.cancelRequest(cancelDto);
   }
 
+  Future<RequestDetailedDto> getDetailedRequest(int id) async {
+    return await requestRepository.getDetailedRequest(id);
+  }
+
   Future<bool> createRequest(
     RequestCreateDto createDto,
     List<File?> images,
@@ -65,6 +71,14 @@ class RequestDataProvider with ChangeNotifier {
         Future.wait(futures);
       }
       return true;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> editRequest(RequestEditDto editDto) async {
+    try {
+      return await requestRepository.editRequest(editDto);
     } catch (e) {
       rethrow;
     }

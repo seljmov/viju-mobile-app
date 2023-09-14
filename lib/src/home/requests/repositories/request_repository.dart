@@ -4,7 +4,9 @@ import '../contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../contacts/removal_dto/removal_dto.dart';
 import '../contacts/request_cancel_dto/request_cancel_dto.dart';
 import '../contacts/request_create_dto/request_create_dto.dart';
+import '../contacts/request_detailed_dto/request_detailed_dto.dart';
 import '../contacts/request_dto/request_dto.dart';
+import '../contacts/request_edit_dto/request_edit_dto.dart';
 import '../contacts/waste_dto/waste_dto.dart';
 
 abstract class IRequestRepository {
@@ -15,6 +17,10 @@ abstract class IRequestRepository {
   Future<List<WasteDto>> getWastes();
 
   Future<List<RemovalDto>> getRemovals();
+
+  Future<RequestDetailedDto> getDetailedRequest(int id);
+
+  Future<bool> editRequest(RequestEditDto requestEditDto);
 
   Future<int?> createRequest(RequestCreateDto requestCreateDto);
 
@@ -144,6 +150,50 @@ class RequestRepositoryImpl implements IRequestRepository {
       final response = await DioHelper.postData(
         url: '/request/cancel',
         data: requestCancelDto.toJson(),
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          return true;
+        default:
+          MyLogger.e(
+            'Что-то пошло не так... Попробуйте снова. code = ${response.statusCode}',
+          );
+          throw Exception('Что-то пошло не так... Попробуйте снова.');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<RequestDetailedDto> getDetailedRequest(int id) async {
+    try {
+      final response = await DioHelper.postData(
+        url: '/request/details',
+        data: {'id': id},
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          return RequestDetailedDto.fromJson(response.data);
+        default:
+          MyLogger.e(
+            'Что-то пошло не так... Попробуйте снова. code = ${response.statusCode}',
+          );
+          throw Exception('Что-то пошло не так... Попробуйте снова.');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> editRequest(RequestEditDto requestEditDto) async {
+    try {
+      final response = await DioHelper.postData(
+        url: '/request/edit',
+        data: requestEditDto.toJson(),
       );
 
       switch (response.statusCode) {

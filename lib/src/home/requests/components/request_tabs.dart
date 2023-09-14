@@ -16,9 +16,11 @@ class RequestTabs extends StatelessWidget {
   const RequestTabs({
     super.key,
     required this.initialStatuses,
+    required this.role,
   });
 
   final List<int> initialStatuses;
+  final int role;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +92,7 @@ class RequestTabs extends StatelessWidget {
                         },
                         child: RequestList(
                           requests: requests,
+                          role: role,
                           status: 0,
                           //status: statuses[currentIndex],
                         ),

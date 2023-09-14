@@ -33,24 +33,26 @@ class BlocGlobalObserver extends BlocObserver {
     StackTrace stackTrace,
   ) async {
     MyLogger.e('${bloc.runtimeType} $error $stackTrace');
-    try {
-      final tokensRepository = TokensRepositoryImpl();
-      final accessToken = await tokensRepository.getAccessToken();
-      if (accessToken != null && accessToken.isNotEmpty) {
-        final data = {
-          'accessToken': accessToken,
-          'text': '${bloc.runtimeType} -> $error',
-          'stackTrace': stackTrace.toString(),
-        };
-        await DioHelper.postData(
-          url: '/error',
-          data: data,
-        ).whenComplete(
-          () => MyLogger.i('Информация об ошибке была отправлена'),
-        );
+    if (!kDebugMode) {
+      try {
+        final tokensRepository = TokensRepositoryImpl();
+        final accessToken = await tokensRepository.getAccessToken();
+        if (accessToken != null && accessToken.isNotEmpty) {
+          final data = {
+            'accessToken': accessToken,
+            'text': '${bloc.runtimeType} -> $error',
+            'stackTrace': stackTrace.toString(),
+          };
+          await DioHelper.postData(
+            url: '/error',
+            data: data,
+          ).whenComplete(
+            () => MyLogger.i('Информация об ошибке была отправлена'),
+          );
+        }
+      } on Exception catch (e) {
+        MyLogger.e('DioHelper.postData -> ${e.getMessage}');
       }
-    } on Exception catch (e) {
-      MyLogger.e('DioHelper.postData -> ${e.getMessage}');
     }
     super.onError(bloc, error, stackTrace);
   }

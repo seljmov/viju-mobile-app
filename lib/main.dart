@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:flutter/services.dart';
@@ -57,20 +58,22 @@ Future<void> main() async {
     (error, stackTrace) async {
       MyLogger.e('Error: $error');
       MyLogger.e('StackTrace: $stackTrace');
-      final tokensRepository = TokensRepositoryImpl();
-      final accessToken = await tokensRepository.getAccessToken();
-      if (accessToken != null && accessToken.isNotEmpty) {
-        final data = {
-          'accessToken': accessToken,
-          'text': 'runZonedGuarded -> $error',
-          'stackTrace': stackTrace.toString(),
-        };
-        await DioHelper.postData(
-          url: '/error',
-          data: data,
-        ).whenComplete(
-          () => MyLogger.i('Информация об ошибке была отправлена'),
-        );
+      if (!kDebugMode) {
+        final tokensRepository = TokensRepositoryImpl();
+        final accessToken = await tokensRepository.getAccessToken();
+        if (accessToken != null && accessToken.isNotEmpty) {
+          final data = {
+            'accessToken': accessToken,
+            'text': 'runZonedGuarded -> $error',
+            'stackTrace': stackTrace.toString(),
+          };
+          await DioHelper.postData(
+            url: '/error',
+            data: data,
+          ).whenComplete(
+            () => MyLogger.i('Информация об ошибке была отправлена'),
+          );
+        }
       }
     },
   );

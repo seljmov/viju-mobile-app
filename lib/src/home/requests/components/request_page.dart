@@ -78,6 +78,7 @@ class RequestPage extends StatelessWidget {
             const SizedBox(height: 20),
             RequestTabs(
               initialStatuses: provider.currentStatuses,
+              role: role,
             ),
           ],
         ),
