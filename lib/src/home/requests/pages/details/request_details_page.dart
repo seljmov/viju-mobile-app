@@ -14,6 +14,7 @@ import '../../../../../theme/theme_extention.dart';
 import '../../contacts/request_detailed_dto/request_detailed_dto.dart';
 import '../../widgets/request_state_card.dart';
 import 'document_widget.dart';
+import 'request_statuses_sheep.dart';
 
 class RequestDetailsPage extends StatelessWidget {
   const RequestDetailsPage({
@@ -36,7 +37,15 @@ class RequestDetailsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              RequestStateCard(statusName: request.statuses.last.status),
+              GestureDetector(
+                onTap: () => RequestStatusesSheep.show(
+                  context,
+                  statuses: request.statuses,
+                ),
+                child: RequestStateCard(
+                  statusName: request.statuses.last.status,
+                ),
+              ),
               Text(
                 kDateTimeFormatter.format(DateTime.utc(
                   request.createdTimestamp.year,

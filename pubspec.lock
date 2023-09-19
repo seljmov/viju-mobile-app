@@ -499,6 +499,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_timeline:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "626201d36d4af6ea0098e64e2530f6df5fc24b5f"
+      url: "https://github.com/nashihu/flutter-timeline.git"
+    source: git
+    version: "0.3.1"
   flutter_web_browser:
     dependency: "direct main"
     description:
