@@ -34,7 +34,10 @@ class FullScreenImagesCarousel extends StatelessWidget {
             AppIcons.close,
             width: 32,
             height: 32,
-            color: Colors.white,
+            colorFilter: const ColorFilter.mode(
+              Colors.white,
+              BlendMode.srcIn,
+            ),
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),

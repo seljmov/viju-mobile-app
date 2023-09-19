@@ -98,7 +98,10 @@ class NetworkImagePreview extends StatelessWidget {
                   child: SvgPicture.asset(
                     "lib/assets/icons/large_error.svg",
                     width: 48,
-                    color: Colors.redAccent,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.redAccent,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               );

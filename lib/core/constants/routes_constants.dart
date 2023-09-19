@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
-import '../../src/home/requests/components/request_page.dart';
+import '../../src/home/requests/pages/request_page.dart';
 import '../../src/home/requests/contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../../src/home/requests/contacts/removal_dto/removal_dto.dart';
 import '../../src/home/requests/contacts/request_detailed_dto/request_detailed_dto.dart';
 import '../../src/home/requests/contacts/waste_dto/waste_dto.dart';
+import '../../src/home/requests/pages/details/request_details_page.dart';
 import '../../src/home/requests/pages/put/request_put_page.dart';
 import '../../src/welcome/login/contracts/user_roles.dart';
 import '../../src/welcome/login/login_page.dart';
@@ -86,8 +87,10 @@ abstract class AppRoutes {
             );
             return null;
           }
-          //final arguments = settings.arguments as RequestDetailedDto?;
-          return null;
+          final request = settings.arguments as RequestDetailedDto;
+          return MaterialPageRoute(
+            builder: (_) => RequestDetailsPage(request: request),
+          );
         default:
           return null;
       }

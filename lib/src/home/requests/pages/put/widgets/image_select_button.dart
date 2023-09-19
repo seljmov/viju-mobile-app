@@ -37,7 +37,10 @@ class ImageSelectButton extends StatelessWidget {
             child: SvgPicture.asset(
               AppIcons.add,
               fit: BoxFit.scaleDown,
-              color: const Color(0xFF1E1E1E),
+              colorFilter: const ColorFilter.mode(
+                Color(0xFF1E1E1E),
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),

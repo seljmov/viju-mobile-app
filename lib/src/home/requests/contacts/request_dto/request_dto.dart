@@ -23,18 +23,18 @@ class RequestDto with _$RequestDto {
   String get volume {
     var volume = '';
     if (volumeInCubicMeters != null) {
-      volume += '${_volumeToString(volumeInCubicMeters)} м³';
+      volume += '${volumeToString(volumeInCubicMeters)} м³';
     }
     if (volumeInTons != null) {
       if (volume.isNotEmpty) {
         volume += '/';
       }
-      volume += '${_volumeToString(volumeInTons)} т';
+      volume += '${volumeToString(volumeInTons)} т';
     }
     return volume;
   }
 
-  String _volumeToString(double? volume) {
+  String volumeToString(double? volume) {
     if (volume == null) return '';
 
     return volume.toString().replaceAll('.0', '');

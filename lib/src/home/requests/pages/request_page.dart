@@ -10,8 +10,8 @@ import '../../../../theme/theme_constants.dart';
 import '../../../../theme/theme_extention.dart';
 import '../../../welcome/auth/auth_scope.dart';
 import '../../../welcome/login/contracts/user_roles.dart';
-import 'request_data_provider.dart';
-import 'request_tabs.dart';
+import '../components/request_data_provider.dart';
+import '../components/request_tabs.dart';
 
 class RequestPage extends StatelessWidget {
   const RequestPage({

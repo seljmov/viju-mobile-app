@@ -37,18 +37,25 @@ class RequestDetailedDto with _$RequestDetailedDto {
   String get volume {
     var volume = '';
     if (volumeInCubicMeters != null) {
-      volume += '${_volumeToString(volumeInCubicMeters)} м³';
+      volume += '${volumeToString(volumeInCubicMeters)} м³';
     }
     if (volumeInTons != null) {
       if (volume.isNotEmpty) {
         volume += '/';
       }
-      volume += '${_volumeToString(volumeInTons)} т';
+      volume += '${volumeToString(volumeInTons)} т';
     }
     return volume;
   }
 
-  String _volumeToString(double? volume) {
+  String get formatPhone {
+    if (this.phone == null || this.phone!.isEmpty) return '-';
+    final phone =
+        '+7 ${this.phone!.substring(0, 3)} ${this.phone!.substring(3, 6)} ${this.phone!.substring(6, 8)} ${this.phone!.substring(8, 10)}';
+    return phone;
+  }
+
+  String volumeToString(double? volume) {
     if (volume == null) return '';
 
     return volume.toString().replaceAll('.0', '');
