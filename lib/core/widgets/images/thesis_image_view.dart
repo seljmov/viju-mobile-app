@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,6 +21,7 @@ class ThesisImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('image: $image');
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -30,16 +29,14 @@ class ThesisImageView extends StatelessWidget {
           onTap: onTap,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12.0),
-            child: Visibility(
-              visible: (image.path ?? '').isEmpty,
-              child: Image.file(
-                image.file ?? File(''),
-                width: size.width,
-                height: size.height,
-                fit: BoxFit.cover,
-              ),
-              replacement: NetworkImagePreview(imageUrl: image.path!),
-            ),
+            child: image.path != null
+                ? NetworkImagePreview(imageUrl: image.path!)
+                : Image.file(
+                    image.file!,
+                    width: size.width,
+                    height: size.height,
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
         Positioned.fill(
