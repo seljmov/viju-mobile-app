@@ -69,7 +69,6 @@ class FullScreenImagesCarousel extends StatelessWidget {
                         visible: fromNetwork,
                         child: Image.network(
                           images[index].path ?? "",
-                          fit: BoxFit.cover,
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) {
                               return child;
