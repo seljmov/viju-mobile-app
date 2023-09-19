@@ -13,7 +13,7 @@ import '../../../welcome/login/contracts/user_roles.dart';
 import '../components/request_data_provider.dart';
 import '../components/request_tabs.dart';
 
-class RequestPage extends StatelessWidget {
+class RequestPage extends StatefulWidget {
   const RequestPage({
     super.key,
     required this.role,
@@ -22,8 +22,21 @@ class RequestPage extends StatelessWidget {
   final int role;
 
   @override
+  State<RequestPage> createState() => _RequestPageState();
+}
+
+class _RequestPageState extends State<RequestPage> with WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final provider = context.read<RequestDataProvider>();
+      provider.refreshRequests();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    debugPrint('role -> $role');
+    debugPrint('role -> ${widget.role}');
     final loadSourcesNotifier = ValueNotifier<bool>(false);
     return Scaffold(
       appBar: AppBar(
@@ -36,7 +49,7 @@ class RequestPage extends StatelessWidget {
         ],
       ),
       floatingActionButton: Visibility(
-        visible: role == UserRoles.employee,
+        visible: widget.role == UserRoles.employee,
         child: FloatingActionButton(
           onPressed: () async {
             loadSourcesNotifier.value = true;
@@ -78,7 +91,7 @@ class RequestPage extends StatelessWidget {
             const SizedBox(height: 20),
             RequestTabs(
               initialStatuses: provider.currentStatuses,
-              role: role,
+              role: widget.role,
             ),
           ],
         ),
