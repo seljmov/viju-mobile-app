@@ -6,7 +6,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../theme/theme_colors.dart';
 import '../../constants/assets_constants.dart';
 import '../../models/multi_image.dart';
-import 'network_image_preview.dart';
+import '../thesis_progress_bar.dart';
 
 /// Просмотр изображений каруселью
 class FullScreenImagesCarousel extends StatelessWidget {
@@ -67,13 +67,17 @@ class FullScreenImagesCarousel extends StatelessWidget {
                     return InteractiveViewer(
                       child: Visibility(
                         visible: fromNetwork,
-                        child: NetworkImagePreview(
-                          imageUrl: images[index].path ?? "",
-                          options: const NetworkImagePreviewOptions(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
+                        child: Image.network(
+                          images[index].path ?? "",
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return const Center(
+                              child: ThesisProgressBar(color: Colors.white),
+                            );
+                          },
                         ),
                         replacement: images[index].path == null
                             ? Image.file(images[index].file!)

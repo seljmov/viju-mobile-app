@@ -35,7 +35,9 @@ class RequestCard extends StatelessWidget {
     final titleSmallBold = context.textTheme.titleSmall!.copyWith(
       fontWeight: FontWeight.bold,
     );
-    return GestureDetector(
+    return InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       onTap: () async {
         editPageIsOpeningNotifier.value = true;
         final provider = context.read<RequestDataProvider>();

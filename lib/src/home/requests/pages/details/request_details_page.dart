@@ -25,7 +25,7 @@ class RequestDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('request.documents: ${request.documents}');
+    debugPrint('request.documents: ${request.photos}');
     final files = request.photos.map((e) => MultiImage(path: e.url)).toList();
     return ThesisSliverScreen(
       title: 'Заявка №${request.id}',
