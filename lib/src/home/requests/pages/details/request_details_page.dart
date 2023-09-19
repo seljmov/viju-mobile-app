@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
 
 import '../../../../../core/constants/constants.dart';
+import '../../../../../core/helpers/message_helper.dart';
+import '../../../../../core/helpers/my_logger.dart';
 import '../../../../../core/models/multi_image.dart';
 import '../../../../../core/widgets/images/full_screen_images_carousel.dart';
 import '../../../../../core/widgets/images/thesis_image_grid.dart';
@@ -10,6 +13,7 @@ import '../../../../../theme/theme_colors.dart';
 import '../../../../../theme/theme_extention.dart';
 import '../../contacts/request_detailed_dto/request_detailed_dto.dart';
 import '../../widgets/request_state_card.dart';
+import 'document_widget.dart';
 
 class RequestDetailsPage extends StatelessWidget {
   const RequestDetailsPage({
@@ -21,9 +25,8 @@ class RequestDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('request.photos: ${request.photos}');
+    debugPrint('request.documents: ${request.documents}');
     final files = request.photos.map((e) => MultiImage(path: e.url)).toList();
-    debugPrint('files: $files');
     return ThesisSliverScreen(
       title: 'Заявка №${request.id}',
       child: Column(
@@ -347,10 +350,76 @@ class RequestDetailsPage extends StatelessWidget {
                   'Документы',
                   style: context.textTheme.headlineSmall,
                 ),
+                const SizedBox(height: 24),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: kDefaultPhysics,
+                  child: Row(
+                    children: List.generate(
+                      request.documents.length,
+                      (index) => Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: GestureDetector(
+                          onTap: () async {
+                            try {
+                              await FlutterWebBrowser.openWebPage(
+                                url: request.documents[index].url,
+                              );
+                            } catch (e) {
+                              MyLogger.e('Error: $e');
+                              MessageHelper.showError(
+                                'Не удалось открыть документ',
+                              );
+                              rethrow;
+                            }
+                          },
+                          child: Container(
+                            width: 200,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: kGray1Color,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 14,
+                                horizontal: 16,
+                              ),
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    DocumentWidget(
+                                      type: request.documents[index].fileName
+                                          .split('.')
+                                          .last,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        request.documents[index].documentType,
+                                        style: context.textTheme.titleLarge
+                                            ?.copyWith(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 64),
         ],
       ),
     );
