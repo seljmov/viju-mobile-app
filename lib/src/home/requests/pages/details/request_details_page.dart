@@ -303,12 +303,12 @@ class RequestDetailsPage extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 30),
           Visibility(
             visible: files.isNotEmpty,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 30),
                 const Divider(color: kGray2Color),
                 const SizedBox(height: 30),
                 Text(
@@ -343,7 +343,7 @@ class RequestDetailsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 30),
+                //const SizedBox(height: 30),
                 const Divider(color: kGray2Color),
                 const SizedBox(height: 30),
                 Text(
@@ -374,8 +374,10 @@ class RequestDetailsPage extends StatelessWidget {
                             }
                           },
                           child: Container(
-                            width: 200,
-                            height: 70,
+                            constraints: const BoxConstraints(
+                              maxWidth: 200,
+                              maxHeight: 70,
+                            ),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: kGray1Color,

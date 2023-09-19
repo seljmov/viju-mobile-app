@@ -23,7 +23,6 @@ class ThesisImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("image.path == null: ${image.path == null}");
     return Stack(
       alignment: Alignment.center,
       children: [

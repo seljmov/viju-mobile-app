@@ -104,6 +104,21 @@ class RequestCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Адрес: ',
+                              style: context.textTheme.titleSmall,
+                            ),
+                            TextSpan(
+                              text: request.locationAddress,
+                              style: titleSmallBold,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
                       Visibility(
                         visible: request.volume.isNotEmpty,
                         child: Padding(
