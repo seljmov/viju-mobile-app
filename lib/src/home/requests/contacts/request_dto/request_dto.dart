@@ -23,15 +23,21 @@ class RequestDto with _$RequestDto {
   String get volume {
     var volume = '';
     if (volumeInCubicMeters != null) {
-      volume += '$volumeInCubicMeters м³';
+      volume += '${_volumeToString(volumeInCubicMeters)} м³';
     }
     if (volumeInTons != null) {
       if (volume.isNotEmpty) {
         volume += '/';
       }
-      volume += '$volumeInTons т';
+      volume += '${_volumeToString(volumeInTons)} т';
     }
     return volume;
+  }
+
+  String _volumeToString(double? volume) {
+    if (volume == null) return '';
+
+    return volume.toString().replaceAll('.0', '');
   }
 
   factory RequestDto.fromJson(Map<String, dynamic> json) =>

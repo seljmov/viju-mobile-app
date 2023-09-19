@@ -39,8 +39,16 @@ class RequestPutPage extends StatelessWidget {
   final List<RemovalDto> removals;
   final RequestDetailedDto? request;
 
+  String _volumeToString(double? volume) {
+    if (volume == null) return '';
+
+    return volume.toString().replaceAll('.0', '');
+  }
+
   @override
   Widget build(BuildContext context) {
+    debugPrint('request: $request');
+
     final contractorController = TextEditingController(
       text: request?.contractor,
     );
@@ -87,10 +95,10 @@ class RequestPutPage extends StatelessWidget {
       text: request?.removalType,
     );
     final countMController = TextEditingController(
-      text: request?.volumeInCubicMeters.toString(),
+      text: _volumeToString(request?.volumeInCubicMeters),
     );
     final countTController = TextEditingController(
-      text: request?.volumeInTons.toString(),
+      text: _volumeToString(request?.volumeInTons),
     );
     final noteController = TextEditingController(text: request?.note);
     final countMFormKey = GlobalKey<FormFieldState>();
@@ -130,10 +138,15 @@ class RequestPutPage extends StatelessWidget {
                   children: [
                     Builder(builder: (context) {
                       if (contractors.length == 1) {
-                        addressController.text = '';
-                        addressesNotifier.value = null;
-                        locationController.text = '';
-                        locationsNotifier.value = null;
+                        if (existedAddress == null) {
+                          addressController.text = '';
+                          addressesNotifier.value = null;
+                        }
+
+                        if (existedLocation == null) {
+                          locationController.text = '';
+                          locationsNotifier.value = null;
+                        }
 
                         contractorController.text = contractors[0].name;
                         locationsNotifier.value = contractors[0].locations;
@@ -197,8 +210,10 @@ class RequestPutPage extends StatelessWidget {
                         }
 
                         if (locations.length == 1) {
-                          addressController.text = '';
-                          addressesNotifier.value = null;
+                          if (existedAddress == null) {
+                            addressController.text = '';
+                            addressesNotifier.value = null;
+                          }
                           locationController.text = locations[0].name;
                           addressesNotifier.value = locations[0].addresses;
                           canCreateRequestNotifier.value = canCreateRequest();
