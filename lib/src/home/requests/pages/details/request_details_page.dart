@@ -205,13 +205,15 @@ class RequestDetailsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      kDateTimeFormatter.format(DateTime.utc(
-                        request.pickupDate.year,
-                        request.pickupDate.month,
-                        request.pickupDate.day,
-                        request.pickupDate.hour,
-                        request.pickupDate.minute,
-                      ).toLocal()),
+                      request.pickupDate.year == 1
+                          ? '-'
+                          : kDateTimeFormatter.format(DateTime.utc(
+                              request.pickupDate.year,
+                              request.pickupDate.month,
+                              request.pickupDate.day,
+                              request.pickupDate.hour,
+                              request.pickupDate.minute,
+                            ).toLocal()),
                       style: context.textTheme.titleLarge,
                     ),
                   ],

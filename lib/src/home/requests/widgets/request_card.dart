@@ -182,8 +182,10 @@ class RequestCard extends StatelessWidget {
                           child: ThesisProgressBar(),
                         ),
                         replacement: Visibility(
-                          visible: request.status ==
-                              RequestStatuses.statusName(RequestStatuses.New),
+                          visible: role == UserRoles.employee &&
+                              request.status ==
+                                  RequestStatuses.statusName(
+                                      RequestStatuses.New),
                           child: _RequestDeleteButton(request: request),
                         ),
                       );

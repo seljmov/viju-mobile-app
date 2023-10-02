@@ -12,7 +12,7 @@ class ThesisSplitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {

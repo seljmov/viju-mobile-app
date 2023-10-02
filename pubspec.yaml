@@ -1,17 +1,15 @@
 name: viju_mobile_app
 description: A new Flutter project.
-
-publish_to: none
-
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.0.5 <4.0.0"
+  sdk: ">=3.1.0 <4.0.0"
 
 dependencies:
-  adaptive_theme: ^3.2.1
-  bloc_concurrency: ^0.2.1
-  cached_network_image: ^3.2.3
+  adaptive_theme: ^3.4.0
+  bloc_concurrency: ^0.2.2
+  cached_network_image: ^3.3.0
   carousel_slider: ^4.2.1
   collection: ^1.17.2
   cupertino_icons: ^1.0.2
@@ -22,17 +20,18 @@ dependencies:
   flutter_bloc: ^8.1.2
   flutter_dotenv: ^5.1.0
   flutter_image_compress: ^2.0.4
+  flutter_localization: ^0.1.14
   flutter_secure_storage: ^8.0.0
   flutter_staggered_animations: ^1.1.1
   flutter_svg: ^2.0.7
-  flutter_timeline: 
+  flutter_timeline:
     git:
       url: https://github.com/nashihu/flutter-timeline.git
       ref: main
   flutter_web_browser: ^0.17.1
   freezed_annotation: ^2.2.0
   image_picker: ^1.0.2
-  intl: ^0.18.0
+  intl: ^0.18.1
   json_annotation: ^4.8.0
   logger: ^1.4.0
   modal_bottom_sheet: ^3.0.0-pre
@@ -56,7 +55,7 @@ dev_dependencies:
 flutter_launcher_icons:
   ios: true
   android: true
-  image_path_ios: "assets/logo/app_logo.jpg"
+  image_path_ios: "assets/logo/app_logo_ios.jpg"
   image_path_android: "assets/logo/app_logo.jpg"
   adaptive_icon_background: "assets/logo/background.png"
   adaptive_icon_foreground: "assets/logo/foreground.png"

@@ -10,9 +10,8 @@ import 'my_logger.dart';
 /// Помощник работы с Dio
 abstract class DioHelper {
   static final _tokensRepository = TokensRepositoryImpl();
-  static const _localBaseUrl = "https://dev.waste.v1ju.ru/api";
 
-  static String get baseUrl => EnvHelper.mainApiUrl ?? _localBaseUrl;
+  static String get baseUrl => EnvHelper.mainApiUrl ?? '';
 
   /// Отправить данные
   static Future<Response> postData({
@@ -27,8 +26,8 @@ abstract class DioHelper {
   static Dio get getBaseDioClient => Dio(
         BaseOptions(
           baseUrl: baseUrl,
-          connectTimeout: const Duration(seconds: 32),
-          receiveTimeout: const Duration(seconds: 32),
+          connectTimeout: const Duration(seconds: 16),
+          receiveTimeout: const Duration(seconds: 16),
         ),
       );
 
@@ -36,15 +35,17 @@ abstract class DioHelper {
   static Dio _getDioClient(bool useAuthErrorInterceptor) {
     final client = getBaseDioClient;
 
-    if (useAuthErrorInterceptor) {
+    if (!useAuthErrorInterceptor) {
+      client.options.followRedirects = false;
+      client.options.validateStatus = (status) => true;
+    } else {
       client.interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) async {
           final accessToken = await _tokensRepository.getAccessToken();
           debugPrint('accessToken -> $accessToken');
 
-          final headers = Map<String, dynamic>.from(options.headers);
-          headers['Accept'] = 'application/json';
-          headers['Content-Type'] = 'application/json';
+          options.headers['Accept'] = 'application/json';
+          options.headers['Content-Type'] = 'application/json';
 
           if (accessToken != null) {
             if (options.data is Map) {
@@ -52,11 +53,10 @@ abstract class DioHelper {
               body['accessToken'] = accessToken;
               options.data = body;
             }
-            headers['Authorization'] = 'Bearer $accessToken';
-            headers['accessToken'] = accessToken;
+            options.headers['Authorization'] = 'Bearer $accessToken';
+            options.headers['accessToken'] = accessToken;
           }
 
-          options.headers = headers;
           return handler.next(options);
         },
         onError: (DioException error, handler) async {
@@ -94,6 +94,7 @@ abstract class DioHelper {
               );
 
               MyLogger.i('Refresh-токен успешно обновлен.');
+              MyLogger.i('Повторный запрос -> $path');
               return handler.resolve(response);
             } on DioException catch (e) {
               MyLogger.i('Refresh-токен не обновлен.');

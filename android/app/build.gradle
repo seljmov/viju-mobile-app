@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    namespace "com.example.viju_mobile_app"
+    namespace "ru.v1ju.waste"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.viju_mobile_app"
+        applicationId "ru.v1ju.waste"
 
         minSdkVersion 18
         targetSdkVersion flutter.targetSdkVersion

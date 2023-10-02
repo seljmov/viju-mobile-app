@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +38,6 @@ Future<void> main() async {
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-
       await dotenv.load(fileName: '.env');
 
       final userRepository = UserRepositoryImpl();
@@ -90,46 +91,47 @@ class AppConfigurator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Localizations(
-      locale: const Locale('ru', 'RU'),
-      delegates: const <LocalizationsDelegate<dynamic>>[
-        DefaultWidgetsLocalizations.delegate,
-        DefaultMaterialLocalizations.delegate,
-      ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<AuthBloc>(
-            create: (context) => AuthBloc(
-              initialState: const AuthState.initial(),
-              tokensRepository: TokensRepositoryImpl(),
-              authRepository: AuthRepositoryImpl(),
-              userRepository: UserRepositoryImpl(),
-            ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(
+            initialState: const AuthState.initial(),
+            tokensRepository: TokensRepositoryImpl(),
+            authRepository: AuthRepositoryImpl(),
+            userRepository: UserRepositoryImpl(),
           ),
-          ChangeNotifierProvider<RequestDataProvider>(
-            create: (context) => RequestDataProvider(
-              [RequestStatuses.New],
-              requestRepository: RequestRepositoryImpl(),
-            ),
-          ),
-        ],
-        child: AdaptiveTheme(
-          light: lightThemeData,
-          dark: darkThemeData,
-          initial: savedTheme ?? AdaptiveThemeMode.light,
-          builder: (light, dark) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              scaffoldMessengerKey: MessageHelper.rootScaffoldMessengerKey,
-              title: 'Mobile app',
-              navigatorKey: NavigationService.navigationKey,
-              onGenerateRoute: AppRoutes.generateRoute,
-              theme: light,
-              darkTheme: dark,
-              home: const AppRunner(),
-            );
-          },
         ),
+        ChangeNotifierProvider<RequestDataProvider>(
+          create: (context) => RequestDataProvider(
+            [RequestStatuses.New],
+            requestRepository: RequestRepositoryImpl(),
+          ),
+        ),
+      ],
+      child: AdaptiveTheme(
+        light: lightThemeData,
+        dark: darkThemeData,
+        initial: savedTheme ?? AdaptiveThemeMode.light,
+        builder: (light, dark) {
+          return MaterialApp(
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('ru', 'RU'),
+            ],
+            debugShowCheckedModeBanner: false,
+            scaffoldMessengerKey: MessageHelper.rootScaffoldMessengerKey,
+            title: 'Mobile app',
+            navigatorKey: NavigationService.navigationKey,
+            onGenerateRoute: AppRoutes.generateRoute,
+            theme: light,
+            darkTheme: dark,
+            home: const AppRunner(),
+          );
+        },
       ),
     );
   }

@@ -20,7 +20,7 @@ abstract class RequestStatuses {
   static Map<int, String> get statuses => {
         New: 'Новые',
         InProgress: statusName(InProgress),
-        Completed: statusName(Completed),
+        Completed: 'Завершены',
       };
 
   /// Возвращает название статуса по его коду

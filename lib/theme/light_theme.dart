@@ -34,13 +34,11 @@ final lightThemeData = ThemeData(
     displayLarge: const TextStyle(
       fontSize: 64,
       fontWeight: FontWeight.w700,
-      letterSpacing: -1.5,
       color: kLightTextPrimaryColor,
     ),
     displayMedium: const TextStyle(
       fontSize: 48,
       fontWeight: FontWeight.w700,
-      letterSpacing: -0.5,
       color: kLightTextPrimaryColor,
     ),
     displaySmall: const TextStyle(
@@ -51,7 +49,6 @@ final lightThemeData = ThemeData(
     headlineMedium: const TextStyle(
       fontSize: 28,
       fontWeight: FontWeight.w600,
-      letterSpacing: 0.25,
       color: kLightTextPrimaryColor,
     ),
     headlineSmall: const TextStyle(
@@ -62,49 +59,41 @@ final lightThemeData = ThemeData(
     titleLarge: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
-      letterSpacing: 0.15,
       color: kLightTextPrimaryColor,
     ),
     titleMedium: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.15,
       color: kLightTextPrimaryColor,
     ),
     titleSmall: TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.1,
       color: kLightTextSecondaryColor,
     ),
     labelLarge: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
-      letterSpacing: 1.25,
       color: kLightTextPrimaryColor,
     ),
     labelSmall: TextStyle(
       fontSize: 10,
       fontWeight: FontWeight.w400,
-      letterSpacing: 1.5,
       color: kLightTextSecondaryColor,
     ),
     bodyLarge: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.5,
       color: kLightTextPrimaryColor,
     ),
     bodyMedium: TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.25,
       color: kLightTextSecondaryColor,
     ),
     bodySmall: TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.4,
       color: kLightTextSecondaryColor,
     ),
   ),
@@ -137,25 +126,21 @@ final lightThemeData = ThemeData(
     errorMaxLines: 4,
     floatingLabelStyle: const TextStyle(
       fontSize: 18,
-      letterSpacing: 0.15,
       fontWeight: FontWeight.w400,
       color: kLightTextPrimaryColor,
     ),
     labelStyle: const TextStyle(
       fontSize: 18,
-      letterSpacing: 0.15,
       fontWeight: FontWeight.w400,
       color: kLightTextPrimaryColor,
     ),
     errorStyle: const TextStyle(
       fontSize: 14,
-      letterSpacing: 0.15,
       fontWeight: FontWeight.w400,
       color: kRedColor,
     ),
     hintStyle: TextStyle(
       fontSize: 16,
-      letterSpacing: 0.1,
       fontWeight: FontWeight.w400,
       color: kLightTextSecondaryColor.withOpacity(0.5),
     ),
@@ -197,7 +182,6 @@ final lightThemeData = ThemeData(
     contentTextStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.15,
       color: kLightTextPrimaryColor,
     ),
   ),
