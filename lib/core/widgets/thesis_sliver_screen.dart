@@ -56,7 +56,7 @@ class ThesisSliverScreen extends StatelessWidget {
                 visible: !visibility && title.isNotEmpty,
                 child: Text(
                   title,
-                  style: context.textTheme.titleMedium,
+                  style: context.textTheme.titleLarge,
                 ),
               ),
             ),
