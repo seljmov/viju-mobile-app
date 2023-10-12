@@ -1,7 +1,7 @@
 name: viju_mobile_app
 description: A new Flutter project.
 publish_to: "none"
-version: 1.0.1+2
+version: 1.0.2+5
 
 environment:
   sdk: ">=3.1.0 <4.0.0"
@@ -38,7 +38,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0-pre
   no_context_navigation: ^2.1.2
   provider: ^6.0.5
-  shared_preferences: ^2.2.0
+  shared_preferences: ^2.2.2
   smooth_page_indicator: ^1.1.0
   validators: ^3.0.0
   visibility_detector: ^0.4.0+2
