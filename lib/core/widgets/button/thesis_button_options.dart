@@ -11,7 +11,7 @@ class ThesisButtonOptions {
 
   const ThesisButtonOptions({
     this.isOutline = false,
-    this.borderRadius = 16,
+    this.borderRadius = 12,
     this.width,
     this.height = 56,
     this.titleStyle,

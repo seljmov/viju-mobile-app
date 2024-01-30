@@ -7,6 +7,7 @@ import '../../../../core/helpers/my_logger.dart';
 import '../../../../core/repositories/tokens/tokens_repository.dart';
 import '../../../../core/repositories/user/user_repository.dart';
 import '../contracts/login_start_dto/login_start_dto.dart';
+import '../contracts/user_roles.dart';
 import '../repositories/login_repository.dart';
 
 part 'login_bloc.freezed.dart';
@@ -44,16 +45,31 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           userName: loginDto.userName.substring(1),
         );
       } else {
-        EnvHelper.mainApiUrl = EnvHelper.productApiUrl ?? '';
+        EnvHelper.mainApiUrl = EnvHelper.productionApiUrl ?? '';
       }
 
+      await _userRepository.setUserUsingDevApi(
+        event.startDto.userName.startsWith('_'),
+      );
+
+      MyLogger.i(event.startDto.userName.startsWith('_')
+          ? 'Используется dev api'
+          : 'Используется production api');
+
       final tokens = await _loginRepository.startLogin(loginDto);
+      if (!UserRoles.allowed.contains(tokens.role)) {
+        emit(const LoginState.errorLogin(
+          message: 'Ошибка в логине/пароле или отсуствуют права доступа',
+        ));
+        return;
+      }
+
       await _tokensRepository.saveTokens(
         tokens.accessToken,
         tokens.refreshToken,
       );
       await _userRepository.saveRole(tokens.role);
-      emit(const LoginState.successLogin());
+      emit(LoginState.successLogin(role: tokens.role));
     } on Exception catch (e) {
       emit(LoginState.errorLogin(message: e.getMessage));
       MyLogger.e(e.getMessage);
@@ -81,7 +97,9 @@ abstract class LoginState with _$LoginState {
   const factory LoginState.loading() = _LoginLoadingState;
 
   /// Состояние успешной авторизации
-  const factory LoginState.successLogin() = _LoginSuccessState;
+  const factory LoginState.successLogin({
+    required int role,
+  }) = _LoginSuccessState;
 
   /// Состояние ошибки авторизации
   const factory LoginState.errorLogin({

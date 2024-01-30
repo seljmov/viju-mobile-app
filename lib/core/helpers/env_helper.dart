@@ -12,5 +12,5 @@ class EnvHelper {
   static String? get devApiUrl => dotenv.env['dev_api'];
 
   /// API для публикации
-  static String? get productApiUrl => dotenv.env['product_api'];
+  static String? get productionApiUrl => dotenv.env['product_api'];
 }

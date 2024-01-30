@@ -5,7 +5,7 @@ import '../contracts/login_start_dto/login_start_dto.dart';
 import 'login_bloc.dart';
 
 /// Скоп для блока аутентификации
-class LoginScope {
+abstract class LoginScope {
   static LoginBloc of(BuildContext context) {
     return BlocProvider.of<LoginBloc>(context);
   }

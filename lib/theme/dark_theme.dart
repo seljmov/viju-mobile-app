@@ -26,13 +26,11 @@ final darkThemeData = ThemeData(
     displayLarge: const TextStyle(
       fontSize: 64,
       fontWeight: FontWeight.w900,
-      letterSpacing: -1.5,
       color: kDarkTextPrimaryColor,
     ),
     displayMedium: const TextStyle(
       fontSize: 48,
       fontWeight: FontWeight.w800,
-      letterSpacing: -0.5,
       color: kDarkTextPrimaryColor,
     ),
     displaySmall: const TextStyle(
@@ -43,7 +41,6 @@ final darkThemeData = ThemeData(
     headlineMedium: const TextStyle(
       fontSize: 28,
       fontWeight: FontWeight.w600,
-      letterSpacing: 0.25,
       color: kDarkTextPrimaryColor,
     ),
     headlineSmall: const TextStyle(
@@ -54,49 +51,41 @@ final darkThemeData = ThemeData(
     titleLarge: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
-      letterSpacing: 0.15,
       color: kDarkTextPrimaryColor,
     ),
     titleMedium: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.15,
       color: kDarkTextPrimaryColor,
     ),
     titleSmall: TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.1,
       color: kDarkTextSecondaryColor,
     ),
     labelLarge: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
-      letterSpacing: 1.25,
       color: kDarkTextPrimaryColor,
     ),
     labelSmall: TextStyle(
       fontSize: 10,
       fontWeight: FontWeight.w400,
-      letterSpacing: 1.5,
       color: kDarkTextSecondaryColor,
     ),
     bodyLarge: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.5,
       color: kDarkTextPrimaryColor,
     ),
     bodyMedium: TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.25,
       color: kDarkTextSecondaryColor,
     ),
     bodySmall: TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.4,
       color: kDarkTextSecondaryColor,
     ),
   ),
@@ -126,19 +115,16 @@ final darkThemeData = ThemeData(
     errorMaxLines: 4,
     labelStyle: const TextStyle(
       fontSize: 16,
-      letterSpacing: 0.15,
       fontWeight: FontWeight.w600,
       color: kDarkTextPrimaryColor,
     ),
     errorStyle: const TextStyle(
       fontSize: 14,
-      letterSpacing: 0.15,
       fontWeight: FontWeight.w400,
       color: kRedColor,
     ),
     hintStyle: TextStyle(
       fontSize: 16,
-      letterSpacing: 0.1,
       fontWeight: FontWeight.w400,
       color: kDarkTextSecondaryColor.withOpacity(0.5),
     ),
@@ -180,7 +166,6 @@ final darkThemeData = ThemeData(
     contentTextStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      letterSpacing: 0.15,
       color: kDarkTextPrimaryColor,
     ),
   ),
