@@ -11,6 +11,7 @@ const _navigationBarStyle = TextStyle(
 
 /// Темная тема
 final darkThemeData = ThemeData(
+  useMaterial3: false,
   scaffoldBackgroundColor: kDarkBackgroundColor,
   fontFamily: "SFProDisplay",
   appBarTheme: const AppBarTheme(

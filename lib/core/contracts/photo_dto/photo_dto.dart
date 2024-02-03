@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'photo_dto.freezed.dart';
 part 'photo_dto.g.dart';
 
+/// Модель данных фотографии
 @freezed
 class PhotoDto with _$PhotoDto {
   const factory PhotoDto({
