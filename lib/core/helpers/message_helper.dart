@@ -60,7 +60,7 @@ class MessageHelper {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
         ),
-        backgroundColor: context.currentTheme.cardTheme.color,
+        backgroundColor: context.currentTheme.scaffoldBackgroundColor,
         duration: _showDuration,
         content: child,
       ),

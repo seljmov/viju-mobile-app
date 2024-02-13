@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import '../../../../core/helpers/dio_helper.dart';
 import '../../../../core/helpers/my_logger.dart';
+import '../../../../core/widgets/images/image_helper.dart';
 import '../contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../contacts/removal_dto/removal_dto.dart';
 import '../contacts/request_cancel_dto/request_cancel_dto.dart';
@@ -9,24 +12,36 @@ import '../contacts/request_dto/request_dto.dart';
 import '../contacts/request_edit_dto/request_edit_dto.dart';
 import '../contacts/waste_dto/waste_dto.dart';
 
+/// Репозиторий запросов
 abstract class IRequestRepository {
+  /// Получить заявки
   Future<List<RequestDto>> getRequests(List<int> statuses);
 
+  /// Получить подрядчиков
   Future<List<ContractorDto>> getContractors();
 
+  /// Получить отходы
   Future<List<WasteDto>> getWastes();
 
+  /// Получить виды вывоза
   Future<List<RemovalDto>> getRemovals();
 
+  /// Получить детальную информацию о заявке
   Future<RequestDetailedDto> getDetailedRequest(int id);
 
+  /// Редактировать заявку
   Future<bool> editRequest(RequestEditDto requestEditDto);
 
+  /// Создать заявку
   Future<int?> createRequest(RequestCreateDto requestCreateDto);
 
+  /// Отменить заявку
   Future<bool> cancelRequest(RequestCancelDto requestCancelDto);
+
+  Future<bool> uploadPhoto(int requestId, File file);
 }
 
+/// Реализация репозитория запросов
 class RequestRepositoryImpl implements IRequestRepository {
   @override
   Future<List<RequestDto>> getRequests(List<int> statuses) async {
@@ -174,6 +189,7 @@ class RequestRepositoryImpl implements IRequestRepository {
         data: {'id': id},
       );
 
+      print(response.data);
       switch (response.statusCode) {
         case 200:
           return RequestDetailedDto.fromJson(response.data);
@@ -205,6 +221,18 @@ class RequestRepositoryImpl implements IRequestRepository {
           );
           throw Exception('Что-то пошло не так... Попробуйте снова.');
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> uploadPhoto(int requestId, File file) async {
+    try {
+      final path = '/upload-request-photo/$requestId';
+      final response = await ImageHelper.register(file, path);
+
+      return response.isNotEmpty;
     } catch (e) {
       rethrow;
     }

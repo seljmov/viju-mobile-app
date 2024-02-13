@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 
@@ -5,14 +7,20 @@ import '../../../../../core/constants/constants.dart';
 import '../../../../../core/helpers/message_helper.dart';
 import '../../../../../core/helpers/my_logger.dart';
 import '../../../../../core/models/multi_image.dart';
+import '../../../../../core/widgets/button/thesis_button.dart';
+import '../../../../../core/widgets/button/thesis_button_options.dart';
 import '../../../../../core/widgets/images/full_screen_images_carousel.dart';
+import '../../../../../core/widgets/images/image_helper.dart';
+import '../../../../../core/widgets/images/image_selector.dart';
 import '../../../../../core/widgets/images/thesis_image_grid.dart';
 import '../../../../../core/widgets/images/thesis_image_view.dart';
 import '../../../../../core/widgets/thesis_sliver_screen.dart';
 import '../../../../../theme/theme_colors.dart';
 import '../../../../../theme/theme_extention.dart';
+import '../../contacts/driver_photo_dto/driver_photo_dto.dart';
 import '../../contacts/request_detailed_dto/request_detailed_dto.dart';
 import '../../widgets/request_state_card.dart';
+import '../put/widgets/image_select_button.dart';
 import 'document_widget.dart';
 import 'request_statuses_sheep.dart';
 
@@ -432,9 +440,169 @@ class RequestDetailsPage extends StatelessWidget {
               ],
             ),
           ),
+          Visibility(
+            visible: request.driver != null,
+            child: Builder(builder: (context) {
+              final beforePhoto = ValueNotifier<_DriverPhoto?>(null);
+              final afterPhoto = ValueNotifier<_DriverPhoto?>(null);
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Водитель',
+                    style: context.textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    request.driver!,
+                    style: context.textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Фото до и после',
+                    style: context.textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ValueListenableBuilder(
+                        valueListenable: beforePhoto,
+                        builder: (context, photo, child) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  final pickFile = await ImageSeletorHelper
+                                      .pickImageFromGallery();
+                                  if (pickFile != null) {
+                                    beforePhoto.value = _DriverPhoto(
+                                      file: pickFile,
+                                      fileDate: DateTime.now(),
+                                    );
+                                  }
+                                },
+                                child: SizedBox(
+                                  width: 125,
+                                  height: 125,
+                                  child: Builder(builder: (context) {
+                                    return photo == null
+                                        ? const ImageSelectWidget(
+                                            size: Size(125, 125))
+                                        : ThesisImageView(
+                                            image: MultiImage(file: photo.file),
+                                            size: const Size(125, 125),
+                                            onRemove: () {
+                                              beforePhoto.value = null;
+                                            });
+                                  }),
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                              Text(
+                                'До',
+                                style: context.textTheme.titleLarge,
+                              ),
+                              if (photo != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    kDateTimeFormatter.format(photo.fileDate!),
+                                    style: context.textTheme.titleSmall,
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 20),
+                      ValueListenableBuilder(
+                        valueListenable: afterPhoto,
+                        builder: (context, photo, child) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  if (beforePhoto.value == null) {
+                                    MessageHelper.showError(
+                                      'Сначала добавьте фото до',
+                                    );
+                                    return;
+                                  }
+
+                                  final pickFile = await ImageSeletorHelper
+                                      .pickImageFromGallery();
+                                  if (pickFile != null) {
+                                    beforePhoto.value = _DriverPhoto(
+                                      file: pickFile,
+                                      fileDate: DateTime.now(),
+                                    );
+                                  }
+                                },
+                                child: const ImageSelectWidget(
+                                  size: Size(125, 125),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  ValueListenableBuilder(
+                    valueListenable: beforePhoto,
+                    builder: (context, value, child) {
+                      return ValueListenableBuilder(
+                        valueListenable: afterPhoto,
+                        builder: (context, value, child) {
+                          return ThesisButton.fromText(
+                            text: 'Сохранить',
+                            isDisabled: (beforePhoto.value == null &&
+                                    request.driverPhotos.isEmpty) ||
+                                (request.driverPhotos.isNotEmpty &&
+                                    request.driverPhotos.length < 2 &&
+                                    afterPhoto.value == null),
+                            onPressed: () async {
+                              if (beforePhoto.value != null &&
+                                  request.driverPhotos.isEmpty) {
+                                final path =
+                                    '/upload-request-photo/${request.id}';
+                                final result = await ImageHelper.register(
+                                    beforePhoto.value!.file!, path);
+                                if (result.isNotEmpty) {
+                                  beforePhoto.value = null;
+                                  MessageHelper.showSuccess(
+                                      'Фото успешно загружено');
+                                }
+                                return;
+                              }
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              );
+            }),
+          ),
           const SizedBox(height: 64),
         ],
       ),
     );
   }
+}
+
+class _DriverPhoto {
+  final File? file;
+  final DriverPhotoDto? dto;
+
+  _DriverPhotoModel({required this.file, required this.dto});
+
+  bool get isUploaded => dto != null;
 }

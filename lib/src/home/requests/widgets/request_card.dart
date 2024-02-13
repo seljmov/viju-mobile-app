@@ -10,6 +10,7 @@ import '../../../../core/widgets/button/thesis_button.dart';
 import '../../../../core/widgets/button/thesis_outlined_button.dart';
 import '../../../../core/widgets/thesis_bottom_sheep.dart';
 import '../../../../core/widgets/thesis_progress_bar.dart';
+import '../../../../theme/theme_colors.dart';
 import '../../../../theme/theme_constants.dart';
 import '../../../../theme/theme_extention.dart';
 import '../../../welcome/login/contracts/user_roles.dart';
@@ -89,7 +90,36 @@ class RequestCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      RequestStateCard(statusName: request.status),
+                      Row(
+                        children: [
+                          RequestStateCard(statusName: request.status),
+                          Visibility(
+                            visible: request.agreed,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 6),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(color: kPrimaryColor),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 8),
+                                  child: Text(
+                                    'Согласовано ЗДС',
+                                    style: TextStyle(
+                                      color: kPrimaryColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                       const SizedBox(height: 16),
                       RichText(
                         text: TextSpan(

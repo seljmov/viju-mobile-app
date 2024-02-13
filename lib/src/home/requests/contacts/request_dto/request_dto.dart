@@ -18,6 +18,7 @@ class RequestDto with _$RequestDto {
     required double? volumeInTons,
     required String? note,
     required DateTime createdTimestamp,
+    required bool agreed,
   }) = _RequestDto;
 
   String get volume {

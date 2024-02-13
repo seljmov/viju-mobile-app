@@ -11,30 +11,41 @@ import '../../models/multi_image.dart';
 import '../thesis_progress_bar.dart';
 
 class ImageSeletorHelper {
-  Future<File?> _pickImageFromCamera() async {
+  static Future<File?> pickImageFromCamera() async {
     try {
       final picker = ImagePicker();
       final pickedFile = await picker.pickImage(source: ImageSource.camera);
       return pickedFile == null ? null : File(pickedFile.path);
     } catch (e) {
-      MyLogger.e('ImageSeletor -> _pickImageFromCamera() -> e -> $e');
+      MyLogger.e('ImageSeletor -> pickImageFromCamera() -> e -> $e');
     }
 
     return null;
   }
 
-  Future<List<File>?> _pickImagesFromGallery() async {
+  static Future<File?> pickImageFromGallery() async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      return pickedFile == null ? null : File(pickedFile.path);
+    } catch (e) {
+      MyLogger.e('ImageSeletor -> pickImageFromGallery() -> e -> $e');
+    }
+    return null;
+  }
+
+  static Future<List<File>?> pickImagesFromGallery() async {
     try {
       final picker = ImagePicker();
       final pickedFileList = await picker.pickMultiImage();
       return List.of(pickedFileList.map((e) => File(e.path)));
     } catch (e) {
-      MyLogger.e('ImageSeletor -> _pickImagesFromGallery() -> e -> $e');
+      MyLogger.e('ImageSeletor -> pickImagesFromGallery() -> e -> $e');
     }
     return null;
   }
 
-  Future<List<MultiImage>> select(BuildContext context) async {
+  static Future<List<MultiImage>> select(BuildContext context) async {
     final cameraPickerInProgress = ValueNotifier<bool>(false);
     final galleryPickerInProgress = ValueNotifier<bool>(false);
     List<File> myFiles = [];
@@ -99,7 +110,7 @@ class ImageSeletorHelper {
                     ),
                     onTap: () async {
                       cameraPickerInProgress.value = true;
-                      await _pickImageFromCamera().then((file) {
+                      await pickImageFromCamera().then((file) {
                         if (file != null) myFiles.add(file);
                       }).whenComplete(
                         () => cameraPickerInProgress.value = true,
@@ -134,7 +145,7 @@ class ImageSeletorHelper {
                     ),
                     onTap: () async {
                       galleryPickerInProgress.value = true;
-                      await _pickImagesFromGallery().then((files) {
+                      await pickImagesFromGallery().then((files) {
                         if (files != null) {
                           myFiles = List.of(files.map((e) => File(e.path)));
                         }
