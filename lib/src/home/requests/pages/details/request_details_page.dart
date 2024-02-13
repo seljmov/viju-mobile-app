@@ -12,6 +12,7 @@ import '../../../../../core/widgets/button/thesis_button_options.dart';
 import '../../../../../core/widgets/images/full_screen_images_carousel.dart';
 import '../../../../../core/widgets/images/image_helper.dart';
 import '../../../../../core/widgets/images/image_selector.dart';
+import '../../../../../core/widgets/images/network_image_preview.dart';
 import '../../../../../core/widgets/images/thesis_image_grid.dart';
 import '../../../../../core/widgets/images/thesis_image_view.dart';
 import '../../../../../core/widgets/thesis_sliver_screen.dart';
@@ -19,6 +20,7 @@ import '../../../../../theme/theme_colors.dart';
 import '../../../../../theme/theme_extention.dart';
 import '../../contacts/driver_photo_dto/driver_photo_dto.dart';
 import '../../contacts/request_detailed_dto/request_detailed_dto.dart';
+import '../../extensions/datetime_extensions.dart';
 import '../../widgets/request_state_card.dart';
 import '../put/widgets/image_select_button.dart';
 import 'document_widget.dart';
@@ -215,13 +217,7 @@ class RequestDetailsPage extends StatelessWidget {
                     Text(
                       request.pickupDate.year == 1
                           ? '-'
-                          : kDateTimeFormatter.format(DateTime.utc(
-                              request.pickupDate.year,
-                              request.pickupDate.month,
-                              request.pickupDate.day,
-                              request.pickupDate.hour,
-                              request.pickupDate.minute,
-                            ).toLocal()),
+                          : request.pickupDate.toLocalFormattedString(),
                       style: context.textTheme.titleLarge,
                     ),
                   ],
@@ -443,8 +439,16 @@ class RequestDetailsPage extends StatelessWidget {
           Visibility(
             visible: request.driver != null,
             child: Builder(builder: (context) {
-              final beforePhoto = ValueNotifier<_DriverPhoto?>(null);
-              final afterPhoto = ValueNotifier<_DriverPhoto?>(null);
+              final beforePhoto = ValueNotifier<_DriverPhoto>(
+                request.driverPhotos.isNotEmpty
+                    ? _DriverPhoto(dto: request.driverPhotos.first)
+                    : _DriverPhoto(),
+              );
+              final afterPhoto = ValueNotifier<_DriverPhoto>(
+                request.driverPhotos.length > 1
+                    ? _DriverPhoto(dto: request.driverPhotos.last)
+                    : _DriverPhoto(),
+              );
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -466,90 +470,19 @@ class RequestDetailsPage extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ValueListenableBuilder(
-                        valueListenable: beforePhoto,
-                        builder: (context, photo, child) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  final pickFile = await ImageSeletorHelper
-                                      .pickImageFromGallery();
-                                  if (pickFile != null) {
-                                    beforePhoto.value = _DriverPhoto(
-                                      file: pickFile,
-                                      fileDate: DateTime.now(),
-                                    );
-                                  }
-                                },
-                                child: SizedBox(
-                                  width: 125,
-                                  height: 125,
-                                  child: Builder(builder: (context) {
-                                    return photo == null
-                                        ? const ImageSelectWidget(
-                                            size: Size(125, 125))
-                                        : ThesisImageView(
-                                            image: MultiImage(file: photo.file),
-                                            size: const Size(125, 125),
-                                            onRemove: () {
-                                              beforePhoto.value = null;
-                                            });
-                                  }),
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-                              Text(
-                                'До',
-                                style: context.textTheme.titleLarge,
-                              ),
-                              if (photo != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Text(
-                                    kDateTimeFormatter.format(photo.fileDate!),
-                                    style: context.textTheme.titleSmall,
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
+                      _DriverPhotoWidget(
+                        photoNotifier: beforePhoto,
+                        title: 'До',
                       ),
                       const SizedBox(width: 20),
                       ValueListenableBuilder(
-                        valueListenable: afterPhoto,
-                        builder: (context, photo, child) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  if (beforePhoto.value == null) {
-                                    MessageHelper.showError(
-                                      'Сначала добавьте фото до',
-                                    );
-                                    return;
-                                  }
-
-                                  final pickFile = await ImageSeletorHelper
-                                      .pickImageFromGallery();
-                                  if (pickFile != null) {
-                                    beforePhoto.value = _DriverPhoto(
-                                      file: pickFile,
-                                      fileDate: DateTime.now(),
-                                    );
-                                  }
-                                },
-                                child: const ImageSelectWidget(
-                                  size: Size(125, 125),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
+                        valueListenable: beforePhoto,
+                        builder: (context, beforeModel, child) =>
+                            _DriverPhotoWidget(
+                          photoNotifier: afterPhoto,
+                          title: 'После',
+                          isDisabled: !beforeModel.isUploaded,
+                        ),
                       ),
                     ],
                   ),
@@ -562,24 +495,14 @@ class RequestDetailsPage extends StatelessWidget {
                         builder: (context, value, child) {
                           return ThesisButton.fromText(
                             text: 'Сохранить',
-                            isDisabled: (beforePhoto.value == null &&
-                                    request.driverPhotos.isEmpty) ||
-                                (request.driverPhotos.isNotEmpty &&
-                                    request.driverPhotos.length < 2 &&
-                                    afterPhoto.value == null),
+                            isDisabled: beforePhoto.value.isEmpty ||
+                                (beforePhoto.value.isUploaded &&
+                                    afterPhoto.value.isEmpty),
                             onPressed: () async {
-                              if (beforePhoto.value != null &&
-                                  request.driverPhotos.isEmpty) {
-                                final path =
-                                    '/upload-request-photo/${request.id}';
-                                final result = await ImageHelper.register(
-                                    beforePhoto.value!.file!, path);
-                                if (result.isNotEmpty) {
-                                  beforePhoto.value = null;
-                                  MessageHelper.showSuccess(
-                                      'Фото успешно загружено');
-                                }
-                                return;
+                              if (!beforePhoto.value.isUploaded) {
+                                await _uploadPhoto(request.id, beforePhoto);
+                              } else if (!afterPhoto.value.isUploaded) {
+                                await _uploadPhoto(request.id, afterPhoto);
                               }
                             },
                           );
@@ -596,13 +519,172 @@ class RequestDetailsPage extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _uploadPhoto(
+    int requestId,
+    ValueNotifier<_DriverPhoto> photoNotifier,
+  ) async {
+    final file = photoNotifier.value.file;
+    if (file != null) {
+      final path = '/upload-request-photo/$requestId';
+      final result = await ImageHelper.register(file, path);
+      if (result.isNotEmpty) {
+        photoNotifier.value = _DriverPhoto(
+          dto: DriverPhotoDto(
+            url: result,
+            fileName: file.path.split('/').last,
+            createdTimestamp: DateTime.now(),
+          ),
+        );
+        MessageHelper.showSuccess('Фото успешно загружено');
+      }
+    }
+  }
+}
+
+class _DriverPhotoWidget extends StatelessWidget {
+  const _DriverPhotoWidget({
+    required this.title,
+    required this.photoNotifier,
+    this.isDisabled = false,
+  });
+
+  final String title;
+  final ValueNotifier<_DriverPhoto> photoNotifier;
+  final bool isDisabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: photoNotifier,
+      builder: (context, model, child) {
+        return model.isUploaded
+            ? _DriverPhotoPreviewWidget(photoDto: model.dto!, title: title)
+            : _DriverPhotoUploadWidget(
+                photoNotifier: photoNotifier,
+                title: title,
+                isDisabled: isDisabled,
+              );
+      },
+    );
+  }
+}
+
+class _DriverPhotoPreviewWidget extends StatelessWidget {
+  const _DriverPhotoPreviewWidget({
+    required this.photoDto,
+    required this.title,
+  });
+
+  final DriverPhotoDto photoDto;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 125,
+          height: 125,
+          child: NetworkImagePreview(
+            imageUrl: photoDto.url,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          title,
+          style: context.textTheme.titleLarge,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            photoDto.createdTimestamp.toLocalFormattedString(),
+            style: context.textTheme.titleSmall,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DriverPhotoUploadWidget extends StatelessWidget {
+  const _DriverPhotoUploadWidget({
+    required this.photoNotifier,
+    required this.title,
+    this.isDisabled = false,
+  });
+
+  final ValueNotifier<_DriverPhoto> photoNotifier;
+  final String title;
+  final bool isDisabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: photoNotifier,
+      builder: (context, model, child) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                if (isDisabled) {
+                  MessageHelper.showError(
+                    'Недоступно для загрузки! Сначала загрузите фото до.',
+                  );
+                  return;
+                }
+
+                final pickFile =
+                    await ImageSeletorHelper.pickImageFromGallery();
+                if (pickFile != null) {
+                  photoNotifier.value = _DriverPhoto(file: pickFile);
+                }
+              },
+              child: SizedBox(
+                width: 125,
+                height: 125,
+                child: Builder(builder: (context) {
+                  return model.file == null
+                      ? ImageSelectWidget(
+                          size: const Size(125, 125),
+                          isDisabled: isDisabled,
+                        )
+                      : ThesisImageView(
+                          image: MultiImage(file: model.file),
+                          size: const Size(125, 125),
+                          onRemove: () {
+                            photoNotifier.value = _DriverPhoto();
+                          });
+                }),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              style: context.textTheme.titleLarge,
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class _DriverPhoto {
   final File? file;
   final DriverPhotoDto? dto;
 
-  _DriverPhotoModel({required this.file, required this.dto});
+  _DriverPhoto({
+    this.file,
+    this.dto,
+  });
 
   bool get isUploaded => dto != null;
+  bool get isEmpty => file == null && dto == null;
+
+  void set file(File? value) => file = value;
 }

@@ -189,7 +189,6 @@ class RequestRepositoryImpl implements IRequestRepository {
         data: {'id': id},
       );
 
-      print(response.data);
       switch (response.statusCode) {
         case 200:
           return RequestDetailedDto.fromJson(response.data);

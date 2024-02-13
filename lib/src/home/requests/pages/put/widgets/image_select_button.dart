@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../../core/constants/assets_constants.dart';
 import '../../../../../../core/models/multi_image.dart';
 import '../../../../../../core/widgets/images/image_selector.dart';
+import '../../../../../../theme/theme_colors.dart';
 
 /// Кнопка выбора изображения
 class ImageSelectButton extends StatelessWidget {
@@ -32,9 +33,11 @@ class ImageSelectWidget extends StatelessWidget {
   const ImageSelectWidget({
     super.key,
     this.size = const Size(100, 100),
+    this.isDisabled = false,
   });
 
   final Size size;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
@@ -46,14 +49,14 @@ class ImageSelectWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        color: const Color(0xFFF2F4FD),
+        color: isDisabled ? kGray2Color : const Color(0xFFF2F4FD),
         child: Align(
           alignment: Alignment.center,
           child: SvgPicture.asset(
             AppIcons.add,
             fit: BoxFit.scaleDown,
-            colorFilter: const ColorFilter.mode(
-              Color(0xFF1E1E1E),
+            colorFilter: ColorFilter.mode(
+              isDisabled ? kGray3Color : const Color(0xFF1E1E1E),
               BlendMode.srcIn,
             ),
           ),

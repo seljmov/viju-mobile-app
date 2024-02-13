@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../constants/assets_constants.dart';
 import '../../repositories/tokens/tokens_repository_impl.dart';
 import '../thesis_progress_bar.dart';
 
@@ -50,10 +51,11 @@ class NetworkImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tokensRepository = TokensRepositoryImpl();
     return Visibility(
       visible: imageUrl.isNotEmpty,
       child: FutureBuilder<String?>(
-        future: TokensRepositoryImpl().getAccessToken(),
+        future: tokensRepository.getAccessToken(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -88,15 +90,12 @@ class NetworkImagePreview extends StatelessWidget {
                 height: size.height,
                 decoration: const BoxDecoration(
                   color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
                 child: Align(
                   alignment: Alignment.center,
                   child: SvgPicture.asset(
-                    "lib/assets/icons/large_error.svg",
+                    AppIcons.error,
                     width: 48,
                     colorFilter: const ColorFilter.mode(
                       Colors.redAccent,
