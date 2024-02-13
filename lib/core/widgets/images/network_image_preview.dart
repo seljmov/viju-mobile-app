@@ -85,6 +85,7 @@ class NetworkImagePreview extends StatelessWidget {
               child: ThesisProgressBar(),
             ),
             errorWidget: (context, url, error) {
+              debugPrint('Error: $error');
               final size = MediaQuery.of(context).size;
               return Container(
                 height: size.height,

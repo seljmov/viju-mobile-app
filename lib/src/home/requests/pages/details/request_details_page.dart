@@ -8,7 +8,6 @@ import '../../../../../core/helpers/message_helper.dart';
 import '../../../../../core/helpers/my_logger.dart';
 import '../../../../../core/models/multi_image.dart';
 import '../../../../../core/widgets/button/thesis_button.dart';
-import '../../../../../core/widgets/button/thesis_button_options.dart';
 import '../../../../../core/widgets/images/full_screen_images_carousel.dart';
 import '../../../../../core/widgets/images/image_helper.dart';
 import '../../../../../core/widgets/images/image_selector.dart';

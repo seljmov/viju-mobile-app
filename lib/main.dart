@@ -45,6 +45,7 @@ Future<void> main() async {
         EnvHelper.mainApiUrl =
             value ? EnvHelper.devApiUrl : EnvHelper.productionApiUrl;
       });
+      debugPrint('MainApiUrl: ${EnvHelper.mainApiUrl}');
 
       Bloc.observer = BlocGlobalObserver();
       Bloc.transformer = bloc_concurrency.sequential();
