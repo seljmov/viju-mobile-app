@@ -8,6 +8,7 @@ import '../../../../../core/helpers/message_helper.dart';
 import '../../../../../core/helpers/my_logger.dart';
 import '../../../../../core/models/multi_image.dart';
 import '../../../../../core/widgets/button/thesis_button.dart';
+import '../../../../../core/widgets/images/file_full_screen.dart';
 import '../../../../../core/widgets/images/full_screen_images_carousel.dart';
 import '../../../../../core/widgets/images/image_helper.dart';
 import '../../../../../core/widgets/images/image_selector.dart';
@@ -671,8 +672,17 @@ class _DriverPhotoUploadWidget extends StatelessWidget {
                   return;
                 }
 
-                final pickFile =
-                    await ImageSeletorHelper.pickImageFromGallery();
+                if (model.file != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return FileFullScreen(file: model.file!);
+                    }),
+                  );
+                  return;
+                }
+
+                final pickFile = await ImageSeletorHelper.pickImageFromCamera();
                 if (pickFile != null) {
                   photoNotifier.value = _DriverPhoto(file: pickFile);
                 }
