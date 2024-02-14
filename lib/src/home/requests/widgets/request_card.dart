@@ -20,6 +20,7 @@ import '../contacts/request_dto/request_dto.dart';
 import '../contacts/request_statuses.dart';
 import 'request_state_card.dart';
 
+/// Карточка заявки
 class RequestCard extends StatelessWidget {
   const RequestCard({
     super.key,
@@ -52,9 +53,10 @@ class RequestCard extends StatelessWidget {
               .pushNamed(AppRoutes.editRequest, args: args)
               .whenComplete(() => editPageIsOpeningNotifier.value = false);
         } else {
-          navService
-              .pushNamed(AppRoutes.detailsRequest, args: detailed)
-              .whenComplete(() => editPageIsOpeningNotifier.value = false);
+          navService.pushNamed(AppRoutes.detailsRequest, args: {
+            'request': detailed,
+            'role': role,
+          }).whenComplete(() => editPageIsOpeningNotifier.value = false);
         }
       },
       child: Builder(builder: (context) {

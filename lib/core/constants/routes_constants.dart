@@ -87,9 +87,11 @@ abstract class AppRoutes {
             );
             return null;
           }
-          final request = settings.arguments as RequestDetailedDto;
+          final args = settings.arguments as Map<String, dynamic>;
+          final request = args['request'] as RequestDetailedDto;
+          final role = args['role'] as int;
           return MaterialPageRoute(
-            builder: (_) => RequestDetailsPage(request: request),
+            builder: (_) => RequestDetailsPage(request: request, role: role),
           );
         default:
           return null;

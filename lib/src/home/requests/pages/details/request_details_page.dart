@@ -17,6 +17,7 @@ import '../../../../../core/widgets/images/thesis_image_view.dart';
 import '../../../../../core/widgets/thesis_sliver_screen.dart';
 import '../../../../../theme/theme_colors.dart';
 import '../../../../../theme/theme_extention.dart';
+import '../../../../welcome/login/contracts/user_roles.dart';
 import '../../contacts/driver_photo_dto/driver_photo_dto.dart';
 import '../../contacts/request_detailed_dto/request_detailed_dto.dart';
 import '../../extensions/datetime_extensions.dart';
@@ -25,13 +26,16 @@ import '../put/widgets/image_select_button.dart';
 import 'document_widget.dart';
 import 'request_statuses_sheep.dart';
 
+/// Страница деталей заявки
 class RequestDetailsPage extends StatelessWidget {
   const RequestDetailsPage({
     super.key,
     required this.request,
+    required this.role,
   });
 
   final RequestDetailedDto request;
+  final int role;
 
   @override
   Widget build(BuildContext context) {
@@ -460,54 +464,73 @@ class RequestDetailsPage extends StatelessWidget {
                     request.driver!,
                     style: context.textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Фото до и после',
-                    style: context.textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _DriverPhotoWidget(
-                        photoNotifier: beforePhoto,
-                        title: 'До',
+                  Visibility(
+                    visible: role == UserRoles.driver ||
+                        request.driverPhotos.isNotEmpty,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Фото до и после',
+                            style: context.textTheme.titleSmall,
+                          ),
+                          const SizedBox(height: 24),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _DriverPhotoWidget(
+                                role: role,
+                                photoNotifier: beforePhoto,
+                                title: 'До',
+                              ),
+                              const SizedBox(width: 20),
+                              ValueListenableBuilder(
+                                valueListenable: beforePhoto,
+                                builder: (context, beforeModel, child) =>
+                                    _DriverPhotoWidget(
+                                  role: role,
+                                  photoNotifier: afterPhoto,
+                                  title: 'После',
+                                  isDisabled: !beforeModel.isUploaded,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
-                      const SizedBox(width: 20),
-                      ValueListenableBuilder(
+                    ),
+                  ),
+                  Visibility(
+                    visible: role == UserRoles.driver &&
+                        !afterPhoto.value.isUploaded,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: ValueListenableBuilder(
                         valueListenable: beforePhoto,
-                        builder: (context, beforeModel, child) =>
-                            _DriverPhotoWidget(
-                          photoNotifier: afterPhoto,
-                          title: 'После',
-                          isDisabled: !beforeModel.isUploaded,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  ValueListenableBuilder(
-                    valueListenable: beforePhoto,
-                    builder: (context, value, child) {
-                      return ValueListenableBuilder(
-                        valueListenable: afterPhoto,
                         builder: (context, value, child) {
-                          return ThesisButton.fromText(
-                            text: 'Сохранить',
-                            isDisabled: beforePhoto.value.isEmpty ||
-                                (beforePhoto.value.isUploaded &&
-                                    afterPhoto.value.isEmpty),
-                            onPressed: () async {
-                              if (!beforePhoto.value.isUploaded) {
-                                await _uploadPhoto(request.id, beforePhoto);
-                              } else if (!afterPhoto.value.isUploaded) {
-                                await _uploadPhoto(request.id, afterPhoto);
-                              }
+                          return ValueListenableBuilder(
+                            valueListenable: afterPhoto,
+                            builder: (context, value, child) {
+                              return ThesisButton.fromText(
+                                text: 'Сохранить',
+                                isDisabled: beforePhoto.value.isEmpty ||
+                                    (beforePhoto.value.isUploaded &&
+                                        afterPhoto.value.isEmpty),
+                                onPressed: () async {
+                                  if (!beforePhoto.value.isUploaded) {
+                                    await _uploadPhoto(request.id, beforePhoto);
+                                  } else if (!afterPhoto.value.isUploaded) {
+                                    await _uploadPhoto(request.id, afterPhoto);
+                                  }
+                                },
+                              );
                             },
                           );
                         },
-                      );
-                    },
+                      ),
+                    ),
                   ),
                 ],
               );
@@ -543,11 +566,13 @@ class RequestDetailsPage extends StatelessWidget {
 
 class _DriverPhotoWidget extends StatelessWidget {
   const _DriverPhotoWidget({
+    required this.role,
     required this.title,
     required this.photoNotifier,
     this.isDisabled = false,
   });
 
+  final int role;
   final String title;
   final ValueNotifier<_DriverPhoto> photoNotifier;
   final bool isDisabled;
@@ -557,6 +582,15 @@ class _DriverPhotoWidget extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: photoNotifier,
       builder: (context, model, child) {
+        if (role != UserRoles.driver) {
+          return model.isUploaded
+              ? _DriverPhotoPreviewWidget(
+                  photoDto: model.dto!,
+                  title: title,
+                )
+              : const SizedBox.shrink();
+        }
+
         return model.isUploaded
             ? _DriverPhotoPreviewWidget(photoDto: model.dto!, title: title)
             : _DriverPhotoUploadWidget(
