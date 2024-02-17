@@ -8,7 +8,7 @@ import '../../../../../core/helpers/message_helper.dart';
 import '../../../../../core/helpers/my_logger.dart';
 import '../../../../../core/models/multi_image.dart';
 import '../../../../../core/widgets/button/thesis_button.dart';
-import '../../../../../core/widgets/images/file_full_screen.dart';
+import '../../../../../core/widgets/images/image_full_screen.dart';
 import '../../../../../core/widgets/images/full_screen_images_carousel.dart';
 import '../../../../../core/widgets/images/image_helper.dart';
 import '../../../../../core/widgets/images/image_selector.dart';
@@ -615,30 +615,42 @@ class _DriverPhotoPreviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 125,
-          height: 125,
-          child: NetworkImagePreview(
-            imageUrl: photoDto.url,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return ImageFullScreen(
+              image: MultiImage(path: photoDto.url),
+            );
+          }),
+        );
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 125,
+            height: 125,
+            child: NetworkImagePreview(
+              imageUrl: photoDto.url,
+            ),
           ),
-        ),
-        const SizedBox(height: 14),
-        Text(
-          title,
-          style: context.textTheme.titleLarge,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Text(
-            photoDto.createdTimestamp.toLocalFormattedString(),
-            style: context.textTheme.titleSmall,
+          const SizedBox(height: 14),
+          Text(
+            title,
+            style: context.textTheme.titleLarge,
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              photoDto.createdTimestamp.toLocalFormattedString(),
+              style: context.textTheme.titleSmall,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -676,7 +688,9 @@ class _DriverPhotoUploadWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      return FileFullScreen(file: model.file!);
+                      return ImageFullScreen(
+                        image: MultiImage(file: model.file),
+                      );
                     }),
                   );
                   return;

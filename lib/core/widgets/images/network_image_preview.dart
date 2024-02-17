@@ -110,10 +110,7 @@ class NetworkImagePreview extends StatelessWidget {
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: options?.borderRadius ??
-                      const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
-                      ),
+                      const BorderRadius.all(Radius.circular(12)),
                   image: DecorationImage(
                     image: imageProvider,
                     fit: options?.fit ?? BoxFit.cover,
