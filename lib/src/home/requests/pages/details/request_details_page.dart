@@ -47,28 +47,49 @@ class RequestDetailsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () => RequestStatusesSheep.show(
-                  context,
-                  statuses: request.statuses,
-                ),
-                child: RequestStateCard(
-                  statusName: request.statuses.last.status,
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => RequestStatusesSheep.show(
+                      context,
+                      statuses: request.statuses,
+                    ),
+                    child: RequestStateCard(
+                      statusName: request.statuses.last.status,
+                    ),
+                  ),
+                  Text(
+                    request.createdTimestamp.toLocalFormattedString(),
+                    style: context.textTheme.titleSmall,
+                  ),
+                ],
               ),
-              Text(
-                kDateTimeFormatter.format(DateTime.utc(
-                  request.createdTimestamp.year,
-                  request.createdTimestamp.month,
-                  request.createdTimestamp.day,
-                  request.createdTimestamp.hour,
-                  request.createdTimestamp.minute,
-                ).toLocal()),
-                style: context.textTheme.titleSmall,
+              const SizedBox(height: 6),
+              Visibility(
+                visible: request.agreed,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(color: kPrimaryColor),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    child: Text(
+                      'Согласовано ЗДС',
+                      style: TextStyle(
+                        color: kPrimaryColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -437,6 +458,7 @@ class RequestDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -551,6 +573,7 @@ class RequestDetailsPage extends StatelessWidget {
     if (file != null) {
       final path = '/upload-request-photo/$requestId';
       final result = await ImageHelper.register(file, path);
+
       if (result.isNotEmpty) {
         photoNotifier.value = _DriverPhoto(
           dto: DriverPhotoDto(
@@ -696,7 +719,8 @@ class _DriverPhotoUploadWidget extends StatelessWidget {
                   return;
                 }
 
-                final pickFile = await ImageSeletorHelper.pickImageFromCamera();
+                final pickFile =
+                    await ImageSeletorHelper.pickImageFromGallery();
                 if (pickFile != null) {
                   photoNotifier.value = _DriverPhoto(file: pickFile);
                 }
