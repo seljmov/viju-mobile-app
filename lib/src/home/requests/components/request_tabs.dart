@@ -27,11 +27,9 @@ class RequestTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     final statuses = RequestStatuses.statuses;
     final relations = RequestStatuses.relatedStatuses;
-    final defaultStatus = [
-      role == UserRoles.driver
-          ? RequestStatuses.InProgress
-          : RequestStatuses.New
-    ];
+    final defaultStatus = (role == UserRoles.driver
+        ? RequestStatuses.relatedStatuses[RequestStatuses.InProgress]
+        : RequestStatuses.relatedStatuses[RequestStatuses.New])!;
 
     if (role == UserRoles.driver) {
       statuses.remove(RequestStatuses.New);

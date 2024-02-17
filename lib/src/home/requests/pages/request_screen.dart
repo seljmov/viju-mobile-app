@@ -13,6 +13,7 @@ import '../../../welcome/login/contracts/user_roles.dart';
 import '../components/request_data_provider.dart';
 import '../components/request_tabs.dart';
 
+/// Экран заявок
 class RequestScreen extends StatefulWidget {
   const RequestScreen({
     super.key,

@@ -7,6 +7,7 @@ import '../contacts/request_statuses.dart';
 import '../repositories/request_repository.dart';
 import 'request_screen.dart';
 
+/// Обертка для экрана заявок
 class RequestWrapper extends StatefulWidget {
   const RequestWrapper({
     super.key,
