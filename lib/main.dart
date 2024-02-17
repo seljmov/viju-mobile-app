@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:provider/provider.dart';
 
 import 'core/bloc/bloc_global_observer.dart';
 import 'core/constants/constants.dart';
@@ -22,9 +21,6 @@ import 'core/helpers/message_helper.dart';
 import 'core/helpers/my_logger.dart';
 import 'core/repositories/tokens/tokens_repository_impl.dart';
 import 'core/repositories/user/user_repository.dart';
-import 'src/home/requests/components/request_data_provider.dart';
-import 'src/home/requests/contacts/request_statuses.dart';
-import 'src/home/requests/repositories/request_repository.dart';
 import 'src/welcome/auth/auth_bloc.dart';
 import 'src/welcome/auth/auth_scope.dart';
 import 'src/welcome/auth/repositories/auth_repository.dart';
@@ -102,12 +98,6 @@ class AppConfigurator extends StatelessWidget {
             userRepository: UserRepositoryImpl(),
           ),
         ),
-        ChangeNotifierProvider<RequestDataProvider>(
-          create: (context) => RequestDataProvider(
-            [RequestStatuses.New],
-            requestRepository: RequestRepositoryImpl(),
-          ),
-        ),
       ],
       child: AdaptiveTheme(
         light: lightThemeData,
@@ -164,9 +154,6 @@ class _AppRunnerState extends State<AppRunner> {
             AppRoutes.login,
           ),
           authenticated: (state) {
-            context
-                .read<RequestDataProvider>()
-                .loadRequests([RequestStatuses.New]);
             return navService.pushNamedAndRemoveUntil(
               AppRoutes.home,
               args: state.role,

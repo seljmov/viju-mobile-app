@@ -4,8 +4,6 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 
 import '../../../core/constants/routes_constants.dart';
 import '../../../core/helpers/message_helper.dart';
-import '../../home/requests/components/request_data_provider.dart';
-import '../../home/requests/contacts/request_statuses.dart';
 import 'bloc/login_bloc.dart';
 import 'bloc/login_scope.dart';
 import 'widgets/login_form_widget.dart';
@@ -26,9 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) => state.maybeMap(
         errorLogin: (state) => MessageHelper.showError(state.message),
         successLogin: (state) {
-          context
-              .read<RequestDataProvider>()
-              .loadRequests([RequestStatuses.New]);
           return navService.pushNamedAndRemoveUntil(
             AppRoutes.home,
             args: state.role,

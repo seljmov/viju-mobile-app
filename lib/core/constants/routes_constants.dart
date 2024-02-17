@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
-import '../../src/home/requests/pages/request_page.dart';
+import '../../src/home/requests/pages/request_wrapper.dart';
 import '../../src/home/requests/contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../../src/home/requests/contacts/removal_dto/removal_dto.dart';
 import '../../src/home/requests/contacts/request_detailed_dto/request_detailed_dto.dart';
@@ -40,7 +40,7 @@ abstract class AppRoutes {
           final role = settings.arguments == null || settings.arguments is! int
               ? UserRoles.employee
               : settings.arguments as int;
-          return MaterialPageRoute(builder: (_) => RequestPage(role: role));
+          return MaterialPageRoute(builder: (_) => RequestWrapper(role: role));
         case addRequest:
           if (settings.arguments == null) {
             MessageHelper.showError(

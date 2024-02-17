@@ -36,7 +36,6 @@ class RequestTabs extends StatelessWidget {
     if (role == UserRoles.driver) {
       statuses.remove(RequestStatuses.New);
       relations.remove(RequestStatuses.New);
-      context.read<RequestDataProvider>().loadRequests(defaultStatus);
     }
 
     final keys = relations.keys.toList();
