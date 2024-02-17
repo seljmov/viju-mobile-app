@@ -503,35 +503,35 @@ class RequestDetailsPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Visibility(
-                    visible: role == UserRoles.driver &&
-                        !afterPhoto.value.isUploaded,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: ValueListenableBuilder(
-                        valueListenable: beforePhoto,
-                        builder: (context, value, child) {
-                          return ValueListenableBuilder(
-                            valueListenable: afterPhoto,
-                            builder: (context, value, child) {
+                  ValueListenableBuilder(
+                    valueListenable: afterPhoto,
+                    builder: (context, afterDriverPhoto, child) {
+                      return Visibility(
+                        visible: role == UserRoles.driver &&
+                            !afterDriverPhoto.isUploaded,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: ValueListenableBuilder(
+                            valueListenable: beforePhoto,
+                            builder: (context, beforeDriverPhoto, child) {
                               return ThesisButton.fromText(
                                 text: 'Сохранить',
-                                isDisabled: beforePhoto.value.isEmpty ||
-                                    (beforePhoto.value.isUploaded &&
-                                        afterPhoto.value.isEmpty),
+                                isDisabled: beforeDriverPhoto.isEmpty ||
+                                    (beforeDriverPhoto.isUploaded &&
+                                        afterDriverPhoto.isEmpty),
                                 onPressed: () async {
-                                  if (!beforePhoto.value.isUploaded) {
+                                  if (!beforeDriverPhoto.isUploaded) {
                                     await _uploadPhoto(request.id, beforePhoto);
-                                  } else if (!afterPhoto.value.isUploaded) {
+                                  } else if (!afterDriverPhoto.isUploaded) {
                                     await _uploadPhoto(request.id, afterPhoto);
                                   }
                                 },
                               );
                             },
-                          );
-                        },
-                      ),
-                    ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               );
