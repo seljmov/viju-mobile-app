@@ -570,21 +570,25 @@ class RequestDetailsPage extends StatelessWidget {
     ValueNotifier<_DriverPhoto> photoNotifier,
   ) async {
     final file = photoNotifier.value.file;
-    if (file != null) {
-      final path = '/upload-request-photo/$requestId';
-      final result = await ImageHelper.register(file, path);
-
-      if (result.isNotEmpty) {
-        photoNotifier.value = _DriverPhoto(
-          dto: DriverPhotoDto(
-            url: result,
-            fileName: file.path.split('/').last,
-            createdTimestamp: DateTime.now(),
-          ),
-        );
-        MessageHelper.showSuccess('Фото успешно загружено');
-      }
+    if (file == null) {
+      MessageHelper.showError('Фото не выбрано');
+      return;
     }
+    final path = '/upload-request-photo/$requestId';
+    final url = await ImageHelper.register(file, path);
+    if (url.isEmpty) {
+      MessageHelper.showError('Не удалось загрузить фото');
+      return;
+    }
+
+    photoNotifier.value = _DriverPhoto(
+      dto: DriverPhotoDto(
+        url: url,
+        fileName: url.split('/').last,
+        createdTimestamp: DateTime.now(),
+      ),
+    );
+    MessageHelper.showSuccess('Фото успешно загружено');
   }
 }
 
@@ -719,7 +723,8 @@ class _DriverPhotoUploadWidget extends StatelessWidget {
                   return;
                 }
 
-                final pickFile = await ImageSeletorHelper.pickImageFromCamera();
+                final pickFile =
+                    await ImageSeletorHelper.pickImageFromGallery();
                 if (pickFile != null) {
                   photoNotifier.value = _DriverPhoto(file: pickFile);
                 }
