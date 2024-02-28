@@ -49,6 +49,7 @@ class RequestCard extends StatelessWidget {
             request.status == RequestStatuses.statusName(RequestStatuses.New)) {
           final args = await provider.loadRequestSources();
           args['request'] = detailed;
+          args['provider'] = provider;
           navService
               .pushNamed(AppRoutes.editRequest, args: args)
               .whenComplete(() => editPageIsOpeningNotifier.value = false);

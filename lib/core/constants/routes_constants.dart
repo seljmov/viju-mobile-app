@@ -51,13 +51,14 @@ abstract class AppRoutes {
           final arguments = settings.arguments as Map<String, dynamic>;
           final contractors = arguments['contractors'] as List<ContractorDto>;
           final wastes = arguments['wastes'] as List<WasteDto>;
+          final provider = arguments['provider'];
           final removals = arguments['removals'] as List<RemovalDto>;
-
           return MaterialPageRoute(
             builder: (_) => RequestPutPage(
               contractors: contractors,
               wastes: wastes,
               removals: removals,
+              provider: provider,
             ),
           );
         case editRequest:
@@ -71,12 +72,14 @@ abstract class AppRoutes {
           final contractors = arguments['contractors'] as List<ContractorDto>;
           final wastes = arguments['wastes'] as List<WasteDto>;
           final removals = arguments['removals'] as List<RemovalDto>;
+          final provider = arguments['provider'];
           final request = arguments['request'] as RequestDetailedDto?;
           return MaterialPageRoute(
             builder: (_) => RequestPutPage(
               contractors: contractors,
               wastes: wastes,
               removals: removals,
+              provider: provider,
               request: request,
             ),
           );

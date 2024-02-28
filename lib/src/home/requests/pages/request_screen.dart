@@ -57,6 +57,7 @@ class _RequestScreenState extends State<RequestScreen>
             loadSourcesNotifier.value = true;
             final provider = context.read<RequestDataProvider>();
             final args = await provider.loadRequestSources();
+            args['provider'] = provider;
             Future.delayed(
               Duration.zero,
               () => navService.pushNamed(
