@@ -723,8 +723,7 @@ class _DriverPhotoUploadWidget extends StatelessWidget {
                   return;
                 }
 
-                final pickFile =
-                    await ImageSeletorHelper.pickImageFromGallery();
+                final pickFile = await ImageSeletorHelper.pickImageFromCamera();
                 if (pickFile != null) {
                   photoNotifier.value = _DriverPhoto(file: pickFile);
                 }
