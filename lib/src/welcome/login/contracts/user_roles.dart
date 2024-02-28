@@ -6,5 +6,9 @@ abstract class UserRoles {
   /// Заказчик (4)
   static const int customer = 4;
 
-  static List<int> get allowed => [employee, customer];
+  /// Сотрудник (7)
+  static const int driver = 7;
+
+  /// Роли с доступом
+  static List<int> get allowed => [employee, customer, driver];
 }

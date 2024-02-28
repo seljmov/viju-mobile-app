@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 
@@ -5,24 +7,36 @@ import '../../../../../core/constants/constants.dart';
 import '../../../../../core/helpers/message_helper.dart';
 import '../../../../../core/helpers/my_logger.dart';
 import '../../../../../core/models/multi_image.dart';
+import '../../../../../core/widgets/button/thesis_button.dart';
+import '../../../../../core/widgets/images/image_full_screen.dart';
 import '../../../../../core/widgets/images/full_screen_images_carousel.dart';
+import '../../../../../core/widgets/images/image_helper.dart';
+import '../../../../../core/widgets/images/image_selector.dart';
+import '../../../../../core/widgets/images/network_image_preview.dart';
 import '../../../../../core/widgets/images/thesis_image_grid.dart';
 import '../../../../../core/widgets/images/thesis_image_view.dart';
 import '../../../../../core/widgets/thesis_sliver_screen.dart';
 import '../../../../../theme/theme_colors.dart';
 import '../../../../../theme/theme_extention.dart';
+import '../../../../welcome/login/contracts/user_roles.dart';
+import '../../contacts/driver_photo_dto/driver_photo_dto.dart';
 import '../../contacts/request_detailed_dto/request_detailed_dto.dart';
+import '../../extensions/datetime_extensions.dart';
 import '../../widgets/request_state_card.dart';
+import '../put/widgets/image_select_button.dart';
 import 'document_widget.dart';
 import 'request_statuses_sheep.dart';
 
+/// Страница деталей заявки
 class RequestDetailsPage extends StatelessWidget {
   const RequestDetailsPage({
     super.key,
     required this.request,
+    required this.role,
   });
 
   final RequestDetailedDto request;
+  final int role;
 
   @override
   Widget build(BuildContext context) {
@@ -33,28 +47,49 @@ class RequestDetailsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () => RequestStatusesSheep.show(
-                  context,
-                  statuses: request.statuses,
-                ),
-                child: RequestStateCard(
-                  statusName: request.statuses.last.status,
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => RequestStatusesSheep.show(
+                      context,
+                      statuses: request.statuses,
+                    ),
+                    child: RequestStateCard(
+                      statusName: request.statuses.last.status,
+                    ),
+                  ),
+                  Text(
+                    request.createdTimestamp.toLocalFormattedString(),
+                    style: context.textTheme.titleSmall,
+                  ),
+                ],
               ),
-              Text(
-                kDateTimeFormatter.format(DateTime.utc(
-                  request.createdTimestamp.year,
-                  request.createdTimestamp.month,
-                  request.createdTimestamp.day,
-                  request.createdTimestamp.hour,
-                  request.createdTimestamp.minute,
-                ).toLocal()),
-                style: context.textTheme.titleSmall,
+              const SizedBox(height: 6),
+              Visibility(
+                visible: request.agreed,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(color: kPrimaryColor),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    child: Text(
+                      'Согласовано ЗДС',
+                      style: TextStyle(
+                        color: kPrimaryColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -207,13 +242,7 @@ class RequestDetailsPage extends StatelessWidget {
                     Text(
                       request.pickupDate.year == 1
                           ? '-'
-                          : kDateTimeFormatter.format(DateTime.utc(
-                              request.pickupDate.year,
-                              request.pickupDate.month,
-                              request.pickupDate.day,
-                              request.pickupDate.hour,
-                              request.pickupDate.minute,
-                            ).toLocal()),
+                          : request.pickupDate.toLocalFormattedString(),
                       style: context.textTheme.titleLarge,
                     ),
                   ],
@@ -429,12 +458,317 @@ class RequestDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 30),
               ],
             ),
+          ),
+          Visibility(
+            visible: request.driver != null,
+            child: Builder(builder: (context) {
+              final beforePhoto = ValueNotifier<_DriverPhoto>(
+                request.driverPhotos.isNotEmpty
+                    ? _DriverPhoto(dto: request.driverPhotos.first)
+                    : _DriverPhoto(),
+              );
+              final afterPhoto = ValueNotifier<_DriverPhoto>(
+                request.driverPhotos.length > 1
+                    ? _DriverPhoto(dto: request.driverPhotos.last)
+                    : _DriverPhoto(),
+              );
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Водитель',
+                    style: context.textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    request.driver!,
+                    style: context.textTheme.titleLarge,
+                  ),
+                  Visibility(
+                    visible: role == UserRoles.driver ||
+                        request.driverPhotos.isNotEmpty,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Фото до и после',
+                            style: context.textTheme.titleSmall,
+                          ),
+                          const SizedBox(height: 24),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _DriverPhotoWidget(
+                                role: role,
+                                photoNotifier: beforePhoto,
+                                title: 'До',
+                              ),
+                              const SizedBox(width: 20),
+                              ValueListenableBuilder(
+                                valueListenable: beforePhoto,
+                                builder: (context, beforeModel, child) =>
+                                    _DriverPhotoWidget(
+                                  role: role,
+                                  photoNotifier: afterPhoto,
+                                  title: 'После',
+                                  isDisabled: !beforeModel.isUploaded,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: afterPhoto,
+                    builder: (context, afterDriverPhoto, child) {
+                      return Visibility(
+                        visible: role == UserRoles.driver &&
+                            !afterDriverPhoto.isUploaded,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: ValueListenableBuilder(
+                            valueListenable: beforePhoto,
+                            builder: (context, beforeDriverPhoto, child) {
+                              return ThesisButton.fromText(
+                                text: 'Сохранить',
+                                isDisabled: beforeDriverPhoto.isEmpty ||
+                                    (beforeDriverPhoto.isUploaded &&
+                                        afterDriverPhoto.isEmpty),
+                                onPressed: () async {
+                                  if (!beforeDriverPhoto.isUploaded) {
+                                    await _uploadPhoto(request.id, beforePhoto);
+                                  } else if (!afterDriverPhoto.isUploaded) {
+                                    await _uploadPhoto(request.id, afterPhoto);
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            }),
           ),
           const SizedBox(height: 64),
         ],
       ),
     );
   }
+
+  Future<void> _uploadPhoto(
+    int requestId,
+    ValueNotifier<_DriverPhoto> photoNotifier,
+  ) async {
+    final file = photoNotifier.value.file;
+    if (file == null) {
+      MessageHelper.showError('Фото не выбрано');
+      return;
+    }
+    final path = '/upload-request-photo/$requestId';
+    final url = await ImageHelper.register(file, path);
+    if (url.isEmpty) {
+      MessageHelper.showError('Не удалось загрузить фото');
+      return;
+    }
+
+    photoNotifier.value = _DriverPhoto(
+      dto: DriverPhotoDto(
+        url: url,
+        fileName: url.split('/').last,
+        createdTimestamp: DateTime.now(),
+      ),
+    );
+    MessageHelper.showSuccess('Фото успешно загружено');
+  }
+}
+
+class _DriverPhotoWidget extends StatelessWidget {
+  const _DriverPhotoWidget({
+    required this.role,
+    required this.title,
+    required this.photoNotifier,
+    this.isDisabled = false,
+  });
+
+  final int role;
+  final String title;
+  final ValueNotifier<_DriverPhoto> photoNotifier;
+  final bool isDisabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: photoNotifier,
+      builder: (context, model, child) {
+        if (role != UserRoles.driver) {
+          return model.isUploaded
+              ? _DriverPhotoPreviewWidget(
+                  photoDto: model.dto!,
+                  title: title,
+                )
+              : const SizedBox.shrink();
+        }
+
+        return model.isUploaded
+            ? _DriverPhotoPreviewWidget(photoDto: model.dto!, title: title)
+            : _DriverPhotoUploadWidget(
+                photoNotifier: photoNotifier,
+                title: title,
+                isDisabled: isDisabled,
+              );
+      },
+    );
+  }
+}
+
+class _DriverPhotoPreviewWidget extends StatelessWidget {
+  const _DriverPhotoPreviewWidget({
+    required this.photoDto,
+    required this.title,
+  });
+
+  final DriverPhotoDto photoDto;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return ImageFullScreen(
+              image: MultiImage(path: photoDto.url),
+            );
+          }),
+        );
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 125,
+            height: 125,
+            child: NetworkImagePreview(
+              imageUrl: photoDto.url,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            title,
+            style: context.textTheme.titleLarge,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              photoDto.createdTimestamp.toLocalFormattedString(),
+              style: context.textTheme.titleSmall,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DriverPhotoUploadWidget extends StatelessWidget {
+  const _DriverPhotoUploadWidget({
+    required this.photoNotifier,
+    required this.title,
+    this.isDisabled = false,
+  });
+
+  final ValueNotifier<_DriverPhoto> photoNotifier;
+  final String title;
+  final bool isDisabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: photoNotifier,
+      builder: (context, model, child) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                if (isDisabled) {
+                  MessageHelper.showError(
+                    'Недоступно для загрузки! Сначала загрузите фото до.',
+                  );
+                  return;
+                }
+
+                if (model.file != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return ImageFullScreen(
+                        image: MultiImage(file: model.file),
+                      );
+                    }),
+                  );
+                  return;
+                }
+
+                final pickFile = await ImageSeletorHelper.pickImageFromCamera();
+                if (pickFile != null) {
+                  photoNotifier.value = _DriverPhoto(file: pickFile);
+                }
+              },
+              child: SizedBox(
+                width: 125,
+                height: 125,
+                child: Builder(builder: (context) {
+                  return model.file == null
+                      ? ImageSelectWidget(
+                          size: const Size(125, 125),
+                          isDisabled: isDisabled,
+                        )
+                      : ThesisImageView(
+                          image: MultiImage(file: model.file),
+                          size: const Size(125, 125),
+                          onRemove: () {
+                            photoNotifier.value = _DriverPhoto();
+                          });
+                }),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              style: context.textTheme.titleLarge,
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DriverPhoto {
+  final File? file;
+  final DriverPhotoDto? dto;
+
+  _DriverPhoto({
+    this.file,
+    this.dto,
+  });
+
+  bool get isUploaded => dto != null;
+  bool get isEmpty => file == null && dto == null;
+
+  void set file(File? value) => file = value;
 }

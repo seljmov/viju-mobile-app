@@ -10,6 +10,7 @@ import '../../../../core/widgets/button/thesis_button.dart';
 import '../../../../core/widgets/button/thesis_outlined_button.dart';
 import '../../../../core/widgets/thesis_bottom_sheep.dart';
 import '../../../../core/widgets/thesis_progress_bar.dart';
+import '../../../../theme/theme_colors.dart';
 import '../../../../theme/theme_constants.dart';
 import '../../../../theme/theme_extention.dart';
 import '../../../welcome/login/contracts/user_roles.dart';
@@ -19,6 +20,7 @@ import '../contacts/request_dto/request_dto.dart';
 import '../contacts/request_statuses.dart';
 import 'request_state_card.dart';
 
+/// Карточка заявки
 class RequestCard extends StatelessWidget {
   const RequestCard({
     super.key,
@@ -47,13 +49,15 @@ class RequestCard extends StatelessWidget {
             request.status == RequestStatuses.statusName(RequestStatuses.New)) {
           final args = await provider.loadRequestSources();
           args['request'] = detailed;
+          args['provider'] = provider;
           navService
               .pushNamed(AppRoutes.editRequest, args: args)
               .whenComplete(() => editPageIsOpeningNotifier.value = false);
         } else {
-          navService
-              .pushNamed(AppRoutes.detailsRequest, args: detailed)
-              .whenComplete(() => editPageIsOpeningNotifier.value = false);
+          navService.pushNamed(AppRoutes.detailsRequest, args: {
+            'request': detailed,
+            'role': role,
+          }).whenComplete(() => editPageIsOpeningNotifier.value = false);
         }
       },
       child: Builder(builder: (context) {
@@ -89,7 +93,36 @@ class RequestCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      RequestStateCard(statusName: request.status),
+                      Row(
+                        children: [
+                          RequestStateCard(statusName: request.status),
+                          Visibility(
+                            visible: request.agreed,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 6),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(color: kPrimaryColor),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 8),
+                                  child: Text(
+                                    'Согласовано ЗДС',
+                                    style: TextStyle(
+                                      color: kPrimaryColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                       const SizedBox(height: 16),
                       RichText(
                         text: TextSpan(

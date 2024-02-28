@@ -9,24 +9,34 @@ import '../contacts/request_dto/request_dto.dart';
 import '../contacts/request_edit_dto/request_edit_dto.dart';
 import '../contacts/waste_dto/waste_dto.dart';
 
+/// Репозиторий запросов
 abstract class IRequestRepository {
+  /// Получить заявки
   Future<List<RequestDto>> getRequests(List<int> statuses);
 
+  /// Получить подрядчиков
   Future<List<ContractorDto>> getContractors();
 
+  /// Получить отходы
   Future<List<WasteDto>> getWastes();
 
+  /// Получить виды вывоза
   Future<List<RemovalDto>> getRemovals();
 
+  /// Получить детальную информацию о заявке
   Future<RequestDetailedDto> getDetailedRequest(int id);
 
+  /// Редактировать заявку
   Future<bool> editRequest(RequestEditDto requestEditDto);
 
+  /// Создать заявку
   Future<int?> createRequest(RequestCreateDto requestCreateDto);
 
+  /// Отменить заявку
   Future<bool> cancelRequest(RequestCancelDto requestCancelDto);
 }
 
+/// Реализация репозитория запросов
 class RequestRepositoryImpl implements IRequestRepository {
   @override
   Future<List<RequestDto>> getRequests(List<int> statuses) async {

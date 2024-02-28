@@ -10,6 +10,7 @@ import '../contacts/request_dto/request_dto.dart';
 import '../contacts/request_edit_dto/request_edit_dto.dart';
 import '../repositories/request_repository.dart';
 
+/// Поставщик данных для заявок
 class RequestDataProvider with ChangeNotifier {
   RequestDataProvider(
     List<int> initialStatuses, {

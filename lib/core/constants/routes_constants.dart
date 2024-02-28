@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
-import '../../src/home/requests/pages/request_page.dart';
+import '../../src/home/requests/pages/request_wrapper.dart';
 import '../../src/home/requests/contacts/contractor/contractor_dto/contractor_dto.dart';
 import '../../src/home/requests/contacts/removal_dto/removal_dto.dart';
 import '../../src/home/requests/contacts/request_detailed_dto/request_detailed_dto.dart';
@@ -40,7 +40,7 @@ abstract class AppRoutes {
           final role = settings.arguments == null || settings.arguments is! int
               ? UserRoles.employee
               : settings.arguments as int;
-          return MaterialPageRoute(builder: (_) => RequestPage(role: role));
+          return MaterialPageRoute(builder: (_) => RequestWrapper(role: role));
         case addRequest:
           if (settings.arguments == null) {
             MessageHelper.showError(
@@ -51,13 +51,14 @@ abstract class AppRoutes {
           final arguments = settings.arguments as Map<String, dynamic>;
           final contractors = arguments['contractors'] as List<ContractorDto>;
           final wastes = arguments['wastes'] as List<WasteDto>;
+          final provider = arguments['provider'];
           final removals = arguments['removals'] as List<RemovalDto>;
-
           return MaterialPageRoute(
             builder: (_) => RequestPutPage(
               contractors: contractors,
               wastes: wastes,
               removals: removals,
+              provider: provider,
             ),
           );
         case editRequest:
@@ -71,12 +72,14 @@ abstract class AppRoutes {
           final contractors = arguments['contractors'] as List<ContractorDto>;
           final wastes = arguments['wastes'] as List<WasteDto>;
           final removals = arguments['removals'] as List<RemovalDto>;
+          final provider = arguments['provider'];
           final request = arguments['request'] as RequestDetailedDto?;
           return MaterialPageRoute(
             builder: (_) => RequestPutPage(
               contractors: contractors,
               wastes: wastes,
               removals: removals,
+              provider: provider,
               request: request,
             ),
           );
@@ -87,9 +90,11 @@ abstract class AppRoutes {
             );
             return null;
           }
-          final request = settings.arguments as RequestDetailedDto;
+          final args = settings.arguments as Map<String, dynamic>;
+          final request = args['request'] as RequestDetailedDto;
+          final role = args['role'] as int;
           return MaterialPageRoute(
-            builder: (_) => RequestDetailsPage(request: request),
+            builder: (_) => RequestDetailsPage(request: request, role: role),
           );
         default:
           return null;

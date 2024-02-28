@@ -29,7 +29,7 @@ abstract class ImageHelper {
 
       switch (response.statusCode) {
         case 200:
-          return response.data.toString();
+          return response.data['url'];
         default:
           throw Exception('Что-то пошло не так');
       }

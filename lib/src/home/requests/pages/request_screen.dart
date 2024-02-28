@@ -13,8 +13,9 @@ import '../../../welcome/login/contracts/user_roles.dart';
 import '../components/request_data_provider.dart';
 import '../components/request_tabs.dart';
 
-class RequestPage extends StatefulWidget {
-  const RequestPage({
+/// Экран заявок
+class RequestScreen extends StatefulWidget {
+  const RequestScreen({
     super.key,
     required this.role,
   });
@@ -22,10 +23,11 @@ class RequestPage extends StatefulWidget {
   final int role;
 
   @override
-  State<RequestPage> createState() => _RequestPageState();
+  State<RequestScreen> createState() => _RequestScreenState();
 }
 
-class _RequestPageState extends State<RequestPage> with WidgetsBindingObserver {
+class _RequestScreenState extends State<RequestScreen>
+    with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -55,6 +57,7 @@ class _RequestPageState extends State<RequestPage> with WidgetsBindingObserver {
             loadSourcesNotifier.value = true;
             final provider = context.read<RequestDataProvider>();
             final args = await provider.loadRequestSources();
+            args['provider'] = provider;
             Future.delayed(
               Duration.zero,
               () => navService.pushNamed(

@@ -7,6 +7,7 @@ import '../../../../core/constants/assets_constants.dart';
 import '../../../../core/widgets/thesis_progress_bar.dart';
 import '../../../../theme/theme_colors.dart';
 import '../../../../theme/theme_extention.dart';
+import '../../../welcome/login/contracts/user_roles.dart';
 import '../contacts/request_statuses.dart';
 import '../widgets/request_list.dart';
 import '../widgets/request_tab_bar_item.dart';
@@ -24,9 +25,16 @@ class RequestTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final defaultStatus = [RequestStatuses.New];
     final statuses = RequestStatuses.statuses;
     final relations = RequestStatuses.relatedStatuses;
+    final defaultStatus = (role == UserRoles.driver
+        ? RequestStatuses.relatedStatuses[RequestStatuses.InProgress]
+        : RequestStatuses.relatedStatuses[RequestStatuses.New])!;
+
+    if (role == UserRoles.driver) {
+      statuses.remove(RequestStatuses.New);
+      relations.remove(RequestStatuses.New);
+    }
 
     final keys = relations.keys.toList();
     final result = relations.entries.firstWhere(

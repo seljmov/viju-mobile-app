@@ -11,6 +11,7 @@ import 'my_logger.dart';
 abstract class DioHelper {
   static final _tokensRepository = TokensRepositoryImpl();
 
+  /// Базовый url
   static String get baseUrl => EnvHelper.mainApiUrl ?? '';
 
   /// Отправить данные
@@ -23,6 +24,7 @@ abstract class DioHelper {
     return await dio.post(url, data: data);
   }
 
+  /// Получить клиент с базовыми настройками
   static Dio get getBaseDioClient => Dio(
         BaseOptions(
           baseUrl: baseUrl,

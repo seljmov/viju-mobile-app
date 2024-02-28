@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:collection/collection.dart';
 
@@ -31,12 +30,14 @@ class RequestPutPage extends StatelessWidget {
     required this.contractors,
     required this.wastes,
     required this.removals,
+    required this.provider,
     this.request,
   });
 
   final List<ContractorDto> contractors;
   final List<WasteDto> wastes;
   final List<RemovalDto> removals;
+  final RequestDataProvider provider;
   final RequestDetailedDto? request;
 
   String _volumeToString(double? volume) {
@@ -481,8 +482,6 @@ class RequestPutPage extends StatelessWidget {
                                   .map((el) => el.file)
                                   .toList();
 
-                              final provider =
-                                  context.read<RequestDataProvider>();
                               final result = await provider.createRequest(
                                   createDto, images);
                               MessageHelper.showByStatus(
@@ -523,8 +522,6 @@ class RequestPutPage extends StatelessWidget {
                               note: noteController.text,
                             );
 
-                            final provider =
-                                context.read<RequestDataProvider>();
                             final result = await provider.editRequest(editDto);
                             MessageHelper.showByStatus(
                               isSuccess: result,

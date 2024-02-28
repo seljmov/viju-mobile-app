@@ -1,12 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../core/contracts/photo_dto/photo_dto.dart';
+import '../driver_photo_dto/driver_photo_dto.dart';
 import '../request_document_dto/request_document_dto.dart';
 import '../request_status_dto/request_status_dto.dart';
 
 part 'request_detailed_dto.freezed.dart';
 part 'request_detailed_dto.g.dart';
 
+/// Модель данных детальной информации о заявке
 @freezed
 class RequestDetailedDto with _$RequestDetailedDto {
   const RequestDetailedDto._();
@@ -29,6 +31,9 @@ class RequestDetailedDto with _$RequestDetailedDto {
     required String? idleRun,
     required String author,
     required String? phone,
+    required bool agreed,
+    required String? driver,
+    required List<DriverPhotoDto> driverPhotos,
     required List<PhotoDto> photos,
     required List<RequestStatusDto> statuses,
     required List<RequestDocumentDto> documents,
